@@ -12,7 +12,46 @@ import org.junit.Test;
 public class TrilaterationTest {
 
 	@Test
-	public void trilateration2DExact() throws Exception {
+	public void trilateration1DExact1() throws Exception {
+		double[][] positions = new double[][] { { 1.0 }, { 2.0 }, { 3.0 } };
+		double[] distances = new double[] { 1.1, 0.1, 0.9 };
+
+		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
+		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+
+		double[] expectedPosition = new double[] { 2.1 };
+		Optimum optimum = solver.solve();
+		testResults(expectedPosition, 0.0001, optimum);
+	}
+	
+	@Test
+	public void trilateration1DExact2() throws Exception {
+		double[][] positions = new double[][] { { 1000.0 }, { 2000.0 }, { 3000.0 } };
+		double[] distances = new double[] { 1100, 100, 900 };
+
+		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
+		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+
+		double[] expectedPosition = new double[] { 2100.0 };
+		Optimum optimum = solver.solve();
+		testResults(expectedPosition, 0.0001, optimum);
+	}
+
+	@Test
+	public void trilateration1DInexact() throws Exception {
+		double[][] positions = new double[][] { { 1000.0 }, { 2000.0 }, { 3000.0 } };
+		double[] distances = new double[] { 1110, 110, 910 };
+
+		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
+		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+
+		double[] expectedPosition = new double[] { 2100.0 };
+		Optimum optimum = solver.solve();
+		testResults(expectedPosition, 30, optimum);
+	}
+
+	@Test
+	public void trilateration2DExact1() throws Exception {
 		double[][] positions = new double[][] { { 1.0, 1.0 }, { 3.0, 1.0 }, { 2.0, 2.0 } };
 		double[] distances = new double[] { 1.0, 1.0, 1.0 };
 
@@ -20,6 +59,19 @@ public class TrilaterationTest {
 		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2.0, 1.0 };
+		Optimum optimum = solver.solve();
+		testResults(expectedPosition, 0.0001, optimum);
+	}
+
+	@Test
+	public void trilateration2DZeroDistance() throws Exception {
+		double[][] positions = new double[][] { { 1.0, 1.0 }, { 2.0, 1.0 } };
+		double[] distances = new double[] { 0.0, 1.0 };
+
+		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
+		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+
+		double[] expectedPosition = new double[] { 1.0, 1.0 };
 		Optimum optimum = solver.solve();
 		testResults(expectedPosition, 0.0001, optimum);
 	}
@@ -77,7 +129,7 @@ public class TrilaterationTest {
 	}
 
 	@Test
-	public void trilateration2DInexact() throws Exception {
+	public void trilateration2DInexact1() throws Exception {
 		double[][] positions = new double[][] { { 1.0, 1.0 }, { 3.0, 1.0 }, { 2.0, 2.0 } };
 		double[] distances = new double[] { 0.9, 1.0, 1.0 };
 
@@ -90,7 +142,7 @@ public class TrilaterationTest {
 	}
 
 	@Test
-	public void trilateration2DInexact1() throws Exception {
+	public void trilateration2DInexact2() throws Exception {
 		double[][] positions = new double[][] { { 5.0, -6.0 }, { 13.0, -15.0 }, { 21.0, -3.0 }, { 12.42, -21.2 } };
 		double[] distances = new double[] { 8.06, 13.97, 23.32, 15.31 };
 
@@ -129,7 +181,7 @@ public class TrilaterationTest {
 	}
 
 	@Test
-	public void trilateration2DDegenerateCase() throws Exception {
+	public void trilateration2DDegenerateCase1() throws Exception {
 		double[][] positions = new double[][] { { 1.0, 1.0 }, { 1.0, 1.0 }, { 3.0, 1.0 } };
 		double[] distances = new double[] { 1.0, 1.0, 1.0 };
 
@@ -188,7 +240,20 @@ public class TrilaterationTest {
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
 		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
-		double[] expectedPosition = new double[] { 5.2, -1.18, 7.7 };
+		double[] expectedPosition = new double[] { 5.2, -1.2, 7.7 };
+		Optimum optimum = solver.solve();
+		testResults(expectedPosition, 1.0, optimum);
+	}
+
+	@Test
+	public void trilateration4DInexact() throws Exception {
+		double[][] positions = new double[][] { { 0.0, 0.0, 0.0, 0.0 }, { 8.84, 4.57, 12.59, 9.2 }, { 0.0, -8.84, 8.84, 9.2 }, { 10.72, -8.96, 8.84, 9.2 } };
+		double[] distances = new double[] { 8.84, 8.84, 8.84, 8.84 };
+
+		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
+		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+
+		double[] expectedPosition = new double[] { 5.2, -1.5, 7.7, 5.9 };
 		Optimum optimum = solver.solve();
 		testResults(expectedPosition, 1.0, optimum);
 	}

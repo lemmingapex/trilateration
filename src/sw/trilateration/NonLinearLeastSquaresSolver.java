@@ -18,6 +18,8 @@ public class NonLinearLeastSquaresSolver {
 
     private final TrilaterationFunction function;
     private final LeastSquaresOptimizer leastSquaresOptimizer;
+    
+    private final static int MAXNUMBEROFITERATIONS = 1000;
 
 	public NonLinearLeastSquaresSolver(TrilaterationFunction function, LeastSquaresOptimizer leastSquaresOptimizer) {
         this.function = function;
@@ -32,11 +34,9 @@ public class NonLinearLeastSquaresSolver {
                 // target values at optimal point in least square equation
                 // (x0+xi)^2 + (y0+yi)^2 + ri^2 = target[i]
 				new ArrayRealVector(target, false), 
-                // where to start with optimization
-                // at constant, [0,0]
 				new ArrayRealVector(initialPoint, false), 
 				new DiagonalMatrix(weights),
-				null, 2000, 2000);
+				null, MAXNUMBEROFITERATIONS, MAXNUMBEROFITERATIONS);
 
         return leastSquaresOptimizer.optimize(leastSquaresProblem);
     }
@@ -66,11 +66,11 @@ public class NonLinearLeastSquaresSolver {
 		double[] target = new double[numberOfPositions];
 		double[] distances = function.getDistances();
 		double[] weights = new double[target.length];
-		// Weights would be inversely proportional to the the square of the distances I think
+		// Weights are inversely proportional to the the square of the distances I think
 		for (int i = 0; i < target.length; i++) {
 			target[i] = 0.0;
-			weights[i] = 1.0 / (distances[i] * distances[i]);
 			//weights[i] = 1.0;
+			weights[i] = (distances[i] * distances[i]);
 		}
 
 		return solve(target, weights, initialPoint);

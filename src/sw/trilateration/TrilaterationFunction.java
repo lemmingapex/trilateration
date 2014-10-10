@@ -16,6 +16,8 @@ import org.apache.commons.math3.util.Pair;
  */
 public class TrilaterationFunction implements MultivariateJacobianFunction {
 
+	private static final double epsilon = 1E-7;
+	
 	/**
 	 * Known positions of static nodes
 	 */
@@ -34,6 +36,11 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 		
 		if(positions.length != distances.length) {
 			throw new IllegalArgumentException("The number of positions your provided, " + positions.length + ", does not match the number of distances, " + distances.length + ".");
+		}
+		
+		// bound distances to strictly positive domain
+		for (int i = 0; i < distances.length; i++) {
+			distances[i] = Math.max(distances[i], epsilon);
 		}
 		
 		int positionDimension = positions[0].length;
@@ -81,11 +88,6 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 
 		/////////// Value ///////////
 		double[] pointArray = point.toArray();
-
-		// check point dimension
-		if (pointArray.length != 2 && pointArray.length != 3) {
-			throw new IllegalArgumentException("Point has to have 2 or 3 dimensions.");
-		}
 
 		// computing least squares. for each applicable node will have separate equation
 		double[] resultPoint = new double[this.distances.length];
