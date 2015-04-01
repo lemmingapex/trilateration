@@ -35,7 +35,7 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 		}
 		
 		if(positions.length != distances.length) {
-			throw new IllegalArgumentException("The number of positions your provided, " + positions.length + ", does not match the number of distances, " + distances.length + ".");
+			throw new IllegalArgumentException("The number of positions you provided, " + positions.length + ", does not match the number of distances, " + distances.length + ".");
 		}
 		
 		// bound distances to strictly positive domain
