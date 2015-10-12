@@ -29,5 +29,11 @@ The multilateration problem can be formulated as an optimization problem and sol
 
 ## Run the tests
 
+### *nix
+
 ./gradlew clean  
 ./gradlew test -i
+
+### Windows
+./gradlew.bat clean  
+./gradlew.bat test -i
