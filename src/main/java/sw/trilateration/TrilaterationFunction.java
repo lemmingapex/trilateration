@@ -16,17 +16,17 @@ import org.apache.commons.math3.util.Pair;
  */
 public class TrilaterationFunction implements MultivariateJacobianFunction {
 
-	private static final double epsilon = 1E-7;
+	protected static final double epsilon = 1E-7;
 	
 	/**
 	 * Known positions of static nodes
 	 */
-	private final double positions[][];
+	protected final double positions[][];
 
 	/**
 	 * Euclidean distances from static nodes to mobile node
 	 */
-	private final double distances[];
+	protected final double distances[];
 
 	public TrilaterationFunction(double positions[][], double distances[]) {
 		
@@ -83,14 +83,16 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 		return new Array2DRowRealMatrix(jacobian);
 	}
 
-	
+	@Override
 	public Pair<RealVector, RealMatrix> value(RealVector point) {
 
-		/////////// Value ///////////
+		// input
 		double[] pointArray = point.toArray();
 
-		// computing least squares. for each applicable node will have separate equation
+		// output
 		double[] resultPoint = new double[this.distances.length];
+		
+		// compute least squares
 		for (int i = 0; i < resultPoint.length; i++) {
 			resultPoint[i] = 0.0;
 			// calculate sum, add to overall
@@ -100,10 +102,7 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 			resultPoint[i] -= (this.getDistances()[i]) * (this.getDistances()[i]);
 		}
 
-		/////////// Jacobian ///////////
 		RealMatrix jacobian = jacobian(point);
-
 		return new Pair<RealVector, RealMatrix>(new ArrayRealVector(resultPoint), jacobian);
 	}
-
 }
