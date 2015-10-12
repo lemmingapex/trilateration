@@ -1,5 +1,4 @@
-Trilateration
-=============
+# Trilateration
 
 ![alt text](Trilateration.png)
 
