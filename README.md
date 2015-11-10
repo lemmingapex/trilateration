@@ -1,5 +1,7 @@
 # Trilateration
 
+[![Build Status](https://travis-ci.org/lemmingapex/Trilateration.svg?branch=master)](https://travis-ci.org/lemmingapex/Trilateration)
+
 ![alt text](Trilateration.png)
 
 Solves a formulation of n-D space trilateration problem using a nonlinear least squares optimizer.

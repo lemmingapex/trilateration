@@ -1,4 +1,4 @@
-package sw.trilateration;
+package com.lemmingapex.trilateration;
 
 import org.apache.commons.math3.fitting.leastsquares.LeastSquaresFactory;
 import org.apache.commons.math3.fitting.leastsquares.LeastSquaresOptimizer;
@@ -10,9 +10,9 @@ import org.apache.commons.math3.linear.DiagonalMatrix;
 /**
  * Solves a Trilateration problem with an instance of a
  * {@link LeastSquaresOptimizer}
- * 
+ *
  * @author scott
- * 
+ *
  */
 public class NonLinearLeastSquaresSolver {
 

@@ -1,4 +1,4 @@
-package sw.trilateration;
+package com.lemmingapex.trilateration;
 
 import static org.junit.Assert.assertEquals;
 
@@ -23,7 +23,7 @@ public class TrilaterationTest {
 		Optimum optimum = solver.solve();
 		testResults(expectedPosition, 0.0001, optimum);
 	}
-	
+
 	@Test
 	public void trilateration1DExact2() throws Exception {
 		double[][] positions = new double[][] { { 1000.0 }, { 2000.0 }, { 3000.0 } };

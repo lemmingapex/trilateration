@@ -1,4 +1,4 @@
-package sw.trilateration;
+package com.lemmingapex.trilateration;
 
 import org.apache.commons.math3.fitting.leastsquares.MultivariateJacobianFunction;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
@@ -10,14 +10,14 @@ import org.apache.commons.math3.util.Pair;
 /**
  * Models the Trilateration problem. This is a formulation for a nonlinear least
  * squares optimizer.
- * 
+ *
  * @author scott
- * 
+ *
  */
 public class TrilaterationFunction implements MultivariateJacobianFunction {
 
 	protected static final double epsilon = 1E-7;
-	
+
 	/**
 	 * Known positions of static nodes
 	 */
@@ -29,27 +29,27 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 	protected final double distances[];
 
 	public TrilaterationFunction(double positions[][], double distances[]) {
-		
+
 		if(positions.length < 2) {
 			throw new IllegalArgumentException("Need at least two positions.");
 		}
-		
+
 		if(positions.length != distances.length) {
 			throw new IllegalArgumentException("The number of positions you provided, " + positions.length + ", does not match the number of distances, " + distances.length + ".");
 		}
-		
+
 		// bound distances to strictly positive domain
 		for (int i = 0; i < distances.length; i++) {
 			distances[i] = Math.max(distances[i], epsilon);
 		}
-		
+
 		int positionDimension = positions[0].length;
 		for (int i = 1; i < positions.length; i++) {
 			if(positionDimension != positions[i].length) {
 				throw new IllegalArgumentException("The dimension of all positions should be the same.");
 			}
 		}
-		
+
 		this.positions = positions;
 		this.distances = distances;
 	}
@@ -64,11 +64,11 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 
 	/**
 	 * Calculate and return Jacobian function Actually return initialized function
-	 * 
-	 * Jacobian matrix, [i][j] at 
-	 * J[i][0] = delta_[(x0-xi)^2 + (y0-yi)^2 - ri^2]/delta_[x0] at 
+	 *
+	 * Jacobian matrix, [i][j] at
+	 * J[i][0] = delta_[(x0-xi)^2 + (y0-yi)^2 - ri^2]/delta_[x0] at
 	 * J[i][1] = delta_[(x0-xi)^2 + (y0-yi)^2 - ri^2]/delta_[y0] partial derivative with respect to the parameters passed to value() method
-	 * 
+	 *
 	 */
 	public RealMatrix jacobian(RealVector point) {
 		double[] pointArray = point.toArray();
@@ -91,7 +91,7 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 
 		// output
 		double[] resultPoint = new double[this.distances.length];
-		
+
 		// compute least squares
 		for (int i = 0; i < resultPoint.length; i++) {
 			resultPoint[i] = 0.0;
