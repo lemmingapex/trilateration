@@ -17,11 +17,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 1.1, 0.1, 0.9 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2.1 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.0001, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.0001, optimum, x);
 	}
 
 	@Test
@@ -30,11 +32,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 1100, 100, 900 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2100.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.0001, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.0001, optimum, x);
 	}
 
 	@Test
@@ -43,11 +47,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 1110, 110, 910 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2100.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 30, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 30, optimum, x);
 	}
 
 	@Test
@@ -56,11 +62,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 1.0, 1.0, 1.0 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2.0, 1.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.0001, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.0001, optimum, x);
 	}
 
 	@Test
@@ -69,11 +77,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 0.0, 1.0 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 1.0, 1.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.0001, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.0001, optimum, x);
 	}
 
 	@Test
@@ -82,11 +92,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { Math.sqrt(2.0), 1.0, 1.0 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { -1.0, -1.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.0001, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.0001, optimum, x);
 	}
 
 	@Test
@@ -95,11 +107,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { Math.sqrt(2.0) * 1000.0, 1000.0, 1000.0 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 1000.0, 1000.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.0001, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.0001, optimum, x);
 	}
 
 	@Test
@@ -108,11 +122,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 5.0, 5.0, 6.36, 3.9 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 5.9, 2.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.01, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.01, optimum, x);
 	}
 
 	@Test
@@ -121,11 +137,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 8.06, 13.97, 23.32 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { -0.6, -11.8 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.01, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.01, optimum, x);
 	}
 
 	@Test
@@ -134,11 +152,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 0.9, 1.0, 1.0 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2.0, 1.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.1, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.1, optimum, x);
 	}
 
 	@Test
@@ -147,11 +167,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 8.06, 13.97, 23.32, 15.31 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { -0.6, -11.8 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 1.0, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 1.0, optimum, x);
 	}
 
 	@Test
@@ -160,11 +182,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 0.5, 0.5, 0.5 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2.0, 1.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.25, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.25, optimum, x);
 	}
 
 	@Test
@@ -173,11 +197,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 2.0, 2.0, 2.0 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2.0, 1.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 2.0, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 2.0, optimum, x);
 	}
 
 	@Test
@@ -186,11 +212,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 1.0, 1.0, 1.0 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2.0, 1.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.5, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.5, optimum, x);
 	}
 
 	@Test
@@ -199,11 +227,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 1.0, 1.0, 1.0 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 1.0, 1.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.5, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.5, optimum, x);
 	}
 
 	@Test
@@ -212,11 +242,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 1.0, 1.0 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2.0, 1.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.5, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.5, optimum, x);
 	}
 
 	@Test
@@ -225,11 +257,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 1.0, 1.0, 1.0 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 2.0, 1.0, 1.0 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 0.0001, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 0.0001, optimum, x);
 	}
 
 	@Test
@@ -238,11 +272,13 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 8.84, 8.84, 8.84, 8.84 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 5.2, -1.2, 7.7 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 1.0, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 1.0, optimum, x);
 	}
 
 	@Test
@@ -251,14 +287,16 @@ public class TrilaterationTest {
 		double[] distances = new double[] { 8.84, 8.84, 8.84, 8.84 };
 
 		TrilaterationFunction trilaterationFunction = new TrilaterationFunction(positions, distances);
-		NonLinearLeastSquaresSolver solver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
+		LinearLeastSquaresSolver lSolver = new LinearLeastSquaresSolver(trilaterationFunction);
+		NonLinearLeastSquaresSolver nlSolver = new NonLinearLeastSquaresSolver(trilaterationFunction, new LevenbergMarquardtOptimizer());
 
 		double[] expectedPosition = new double[] { 5.2, -1.5, 7.7, 5.9 };
-		Optimum optimum = solver.solve();
-		testResults(expectedPosition, 1.0, optimum);
+		RealVector x = lSolver.solve();
+		Optimum optimum = nlSolver.solve();
+		testResults(expectedPosition, 1.0, optimum, x);
 	}
 
-	private void testResults(double[] expectedPosition, final double delta, Optimum optimum) {
+	private void testResults(double[] expectedPosition, final double delta, Optimum optimum, RealVector x) {
 
 		double[] calculatedPosition = optimum.getPoint().toArray();
 
@@ -270,7 +308,13 @@ public class TrilaterationTest {
 			output.append(expectedPosition[i]).append(" ");
 		}
 		output.append("\n");
-		output.append("calculatedPosition: ");
+		output.append("linear calculatedPosition: ");
+		double[] linearCalculatedPosition = x.toArray();
+		for (int i = 0; i < linearCalculatedPosition.length; i++) {
+			output.append(linearCalculatedPosition[i]).append(" ");
+		}
+		output.append("\n");
+		output.append("non-linear calculatedPosition: ");
 		for (int i = 0; i < calculatedPosition.length; i++) {
 			output.append(calculatedPosition[i]).append(" ");
 		}
