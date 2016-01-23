@@ -1,6 +1,7 @@
 # Trilateration
 
 [![Build Status](https://travis-ci.org/lemmingapex/Trilateration.svg?branch=master)](https://travis-ci.org/lemmingapex/Trilateration)
+[![License](https://img.shields.io/badge/license-MIT%20License-blue.svg)](LICENSE)
 
 ![alt text](Trilateration.png)
 
