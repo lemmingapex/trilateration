@@ -69,6 +69,8 @@ public class TrilaterationFunction implements MultivariateJacobianFunction {
 	 * J[i][0] = delta_[(x0-xi)^2 + (y0-yi)^2 - ri^2]/delta_[x0] at
 	 * J[i][1] = delta_[(x0-xi)^2 + (y0-yi)^2 - ri^2]/delta_[y0] partial derivative with respect to the parameters passed to value() method
 	 *
+	 * @param point for which to calculate the slope
+	 * @return Jacobian matrix for point
 	 */
 	public RealMatrix jacobian(RealVector point) {
 		double[] pointArray = point.toArray();

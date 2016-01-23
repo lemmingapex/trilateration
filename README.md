@@ -6,8 +6,8 @@
 
 Solves a formulation of n-D space trilateration problem using a nonlinear least squares optimizer.
 
-Input: positions, distances  
-Output: centroid (geometry and error)  
+**Input:** positions, distances  
+**Output:** centroid with geometry and error  
 
 Uses [Levenberg-Marquardt algorithm](http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm) from [Apache Commons Math](http://commons.apache.org/proper/commons-math/).
 
@@ -21,7 +21,7 @@ Uses [Levenberg-Marquardt algorithm](http://en.wikipedia.org/wiki/Levenberg%E2%8
     // the answer
     double[] centroid = optimum.getPoint().toArray();
 
-    // error and geometry information
+    // error and geometry information; may throw SingularMatrixException depending the threshold argument provided
    	RealVector standardDeviation = optimum.getSigma(0);
    	RealMatrix covarianceMatrix = optimum.getCovariances(0);
 
