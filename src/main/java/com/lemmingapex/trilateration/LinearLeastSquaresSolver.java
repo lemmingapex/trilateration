@@ -3,10 +3,8 @@ package com.lemmingapex.trilateration;
 import org.apache.commons.math3.linear.*;
 
 /**
- * FIXME: Testing a linear approach...
- * <p>
- * Solves a Trilateration problem
- * </p>
+ *
+ * For testing only. A linear approach to solve the Trilateration problem.
  * see http://inside.mines.edu/~whereman/talks/TurgutOzal-11-Trilateration.pdf
  *
  * @author scott
