@@ -4,9 +4,9 @@ import org.apache.commons.math3.linear.*;
 
 /**
  * FIXME: Testing a linear approach...
- * <p/>
+ * <p>
  * Solves a Trilateration problem
- * <p/>
+ * </p>
  * see http://inside.mines.edu/~whereman/talks/TurgutOzal-11-Trilateration.pdf
  *
  * @author scott
