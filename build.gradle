@@ -52,21 +52,21 @@ uploadArchives {
                 }
 
                 pom.project {
-                    name 'Trilateration'
+                    name 'trilateration'
                     packaging 'jar'
                     description 'Solves a formulation of n-D space trilateration problem using a nonlinear least squares optimizer'
-                    url 'https://github.com/lemmingapex/Trilateration'
+                    url 'https://github.com/lemmingapex/trilateration'
 
                     scm {
-                        connection 'scm:git:git@github.com:lemmingapex/Trilateration.git'
-                        developerConnection 'scm:git:git@github.com:lemmingapex/Trilateration.git'
-                        url 'git@github.com:lemmingapex/Trilateration.git'
+                        connection 'scm:git:git@github.com:lemmingapex/trilateration.git'
+                        developerConnection 'scm:git:git@github.com:lemmingapex/trilateration.git'
+                        url 'git@github.com:lemmingapex/trilateration.git'
                     }
 
                     licenses {
                         license {
                             name 'The MIT License (MIT)'
-                            url 'https://raw.githubusercontent.com/lemmingapex/Trilateration/master/LICENSE'
+                            url 'https://raw.githubusercontent.com/lemmingapex/trilateration/master/LICENSE'
                         }
                     }
 

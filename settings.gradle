@@ -16,4 +16,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'Trilateration'
+rootProject.name = 'trilateration'
