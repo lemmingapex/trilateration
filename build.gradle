@@ -10,23 +10,81 @@
 // Apply the java plugin to add support for Java
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'signing'
 
 group 'com.lemmingapex.trilateration'
+//archivesBaseName 'Trilateration'
 version '1.0.1'
+
+def remotePublish = false
+
+task javadocJar(type: Jar, dependsOn:javadoc) {
+    classifier = 'javadoc'
+    from javadoc
+}
 
 task sourcesJar(type: Jar, dependsOn:classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
 
-task javadocJar(type: Jar, dependsOn:javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
+artifacts {
+    archives javadocJar, sourcesJar
 }
 
-artifacts {
-    archives sourcesJar
-    archives javadocJar
+signing {
+    required {remotePublish}
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            if (!remotePublish) {
+                repository url: 'file://' + new File(System.getProperty('user.home'), '.m2/repository')
+            } else {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'Trilateration'
+                    packaging 'jar'
+                    description 'Solves a formulation of n-D space trilateration problem using a nonlinear least squares optimizer'
+                    url 'https://github.com/lemmingapex/Trilateration'
+
+                    scm {
+                        connection 'scm:git:git@github.com:lemmingapex/Trilateration.git'
+                        developerConnection 'scm:git:git@github.com:lemmingapex/Trilateration.git'
+                        url 'git@github.com:lemmingapex/Trilateration.git'
+                    }
+
+                    licenses {
+                        license {
+                            name 'The MIT License (MIT)'
+                            url 'https://raw.githubusercontent.com/lemmingapex/Trilateration/master/LICENSE'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'lemmingapex'
+                            name 'Scott Wiedemann'
+                            email 'lemmingapex@gmail.com'
+                            roles {
+                                role 'developer'
+                            }
+                            timezone 'UTC-07'
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 // In this section you declare where to find the dependencies of your project
