@@ -70,16 +70,19 @@ public class NonLinearLeastSquaresSolver {
 		}
 
 		double[] target = new double[numberOfPositions];
-		double[] distances = function.getDistances();
 		double[] weights = new double[target.length];
+		calcWeights(weights, function);
+
+		return solve(target, weights, initialPoint, debugInfo);
+	}
+
+	protected void calcWeights(double[] weights, TrilaterationFunction function) {
+		double[] distances = function.getDistances();
 		// Weights are inversely proportional to the the square of the distances I think
-		for (int i = 0; i < target.length; i++) {
-			target[i] = 0.0;
+		for (int i = 0; i < weights.length; i++) {
 			// weights[i] = 1.0;
 			weights[i] = (distances[i] * distances[i]);
 		}
-
-		return solve(target, weights, initialPoint, debugInfo);
 	}
 
 	public Optimum solve() {
