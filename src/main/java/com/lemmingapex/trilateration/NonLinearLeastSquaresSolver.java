@@ -72,14 +72,16 @@ public class NonLinearLeastSquaresSolver {
 		double[] target = new double[numberOfPositions];
 		double[] distances = function.getDistances();
 		double[] weights = new double[target.length];
-		// Weights are inversely proportional to the the square of the distances I think
 		for (int i = 0; i < target.length; i++) {
 			target[i] = 0.0;
-			// weights[i] = 1.0;
-			weights[i] = (distances[i] * distances[i]);
+			weights[i] = inverseSquareLaw(distances[i]);
 		}
 
 		return solve(target, weights, initialPoint, debugInfo);
+	}
+
+	private double inverseSquareLaw(double distance) {
+		return 1 / (distance * distance);
 	}
 
 	public Optimum solve() {
