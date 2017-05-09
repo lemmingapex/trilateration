@@ -36,7 +36,7 @@ To add a dependency on Trilateration using Maven, use the following:
 <dependency>
     <groupId>com.lemmingapex.trilateration</groupId>
     <artifactId>trilateration</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@ To add a dependency using Gradle:
 
 ```
 dependencies {
-  compile 'com.lemmingapex.trilateration:trilateration:1.0.1'
+  compile 'com.lemmingapex.trilateration:trilateration:1.0.2'
 }
 ```
 
