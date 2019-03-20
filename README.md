@@ -44,7 +44,7 @@ To add a dependency using Gradle:
 
 ```
 dependencies {
-  compile 'com.lemmingapex.trilateration:trilateration:1.0.2'
+  implementation 'com.lemmingapex.trilateration:trilateration:1.0.2'
 }
 ```
 
