@@ -1,13 +1,27 @@
-*.class
-
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
-*.iml
-
-## Directory-based project format:
-.idea/
-
-# Generated files
+# Build output
 .gradle/
+.kotlin/
 build/
+out/
 bin/
 gen/
+*.class
+
+# IntelliJ IDEA / Android Studio
+.idea/
+*.iml
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
