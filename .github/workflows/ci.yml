@@ -9,14 +9,20 @@ on:
 permissions:
   contents: read
 
+# A new push to a pull request cancels its run in progress; runs on master always finish.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   build:
     name: Build (JDK ${{ matrix.java }})
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        # Gradle 9 needs JDK 17+ to run; the library itself targets Java 8 via --release 8.
+        # Java 17 is the minimum supported version; 21 and 25 are the later LTS releases.
         java: [17, 21, 25]
     steps:
       - uses: actions/checkout@v7
@@ -29,7 +35,8 @@ jobs:
       # Also validates the checksum of the Gradle wrapper jar.
       - uses: gradle/actions/setup-gradle@v6
 
-      - run: ./gradlew build
+      # Deprecations fail the build, so they are fixed before the next major Gradle version.
+      - run: ./gradlew build --warning-mode fail
 
       - name: Check README figures are up to date
         if: matrix.java == 25
@@ -47,3 +54,4 @@ jobs:
         with:
           name: reports
           path: build/reports/
+

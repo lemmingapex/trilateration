@@ -180,14 +180,7 @@ final class SvgWriter {
     enum Swatch { ANCHOR, DISTANCE, OUTLIER_DISTANCE, ESTIMATE, HOLLOW_ESTIMATE, REGION, ALTERNATIVE, RESIDUAL, PATH, TRUTH }
 
     /** One legend entry. */
-    static final class LegendItem {
-        final Swatch swatch;
-        final String text;
-
-        LegendItem(Swatch swatch, String text) {
-            this.swatch = swatch;
-            this.text = text;
-        }
+    record LegendItem(Swatch swatch, String text) {
     }
 
     /**
@@ -299,9 +292,9 @@ final class SvgWriter {
                 double cy = legendTop + r * LEGEND_ROW + LEGEND_ROW / 2;
                 for (double[] slot : rows.get(r)) {
                     LegendItem item = legend.get(index++);
-                    s.append(swatch(item.swatch, slot[0] + SWATCH / 2, cy));
+                    s.append(swatch(item.swatch(), slot[0] + SWATCH / 2, cy));
                     s.append("<text class=\"legend\" x=\"").append(num(slot[0] + SWATCH + 6)).append("\" y=\"")
-                            .append(num(cy + 4)).append("\">").append(escape(item.text)).append("</text>");
+                            .append(num(cy + 4)).append("\">").append(escape(item.text())).append("</text>");
                 }
             }
             return s.append("</g>\n").toString();
@@ -313,7 +306,7 @@ final class SvgWriter {
             List<double[]> row = new ArrayList<>();
             double x = left;
             for (LegendItem item : legend) {
-                double w = SWATCH + 6 + textWidth(item.text, 6.9);
+                double w = SWATCH + 6 + textWidth(item.text(), 6.9);
                 if (!row.isEmpty() && x + w > right) {
                     rows.add(row);
                     row = new ArrayList<>();
@@ -331,30 +324,19 @@ final class SvgWriter {
         private static String swatch(Swatch swatch, double cx, double cy) {
             String x = num(cx);
             String y = num(cy);
-            switch (swatch) {
-                case ANCHOR:
-                    return "<circle class=\"anchor\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"5\"/>";
-                case DISTANCE:
-                    return "<circle class=\"circle\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"7\"/>";
-                case OUTLIER_DISTANCE:
-                    return "<circle class=\"circle outlier\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"7\"/>";
-                case ESTIMATE:
-                    return "<circle class=\"estimate\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"6\"/>";
-                case HOLLOW_ESTIMATE:
-                case ALTERNATIVE:
-                    return "<circle class=\"alternative\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"6\"/>";
-                case REGION:
-                    return "<ellipse class=\"ellipse\" cx=\"" + x + "\" cy=\"" + y + "\" rx=\"8.5\" ry=\"6\"/>";
-                case RESIDUAL:
-                    return "<line class=\"residual\" x1=\"" + num(cx - 7) + "\" y1=\"" + y + "\" x2=\"" + num(cx + 7) + "\" y2=\"" + y + "\"/>";
-                case PATH:
-                    return "<line class=\"path\" x1=\"" + num(cx - 8) + "\" y1=\"" + num(cy + 3) + "\" x2=\"" + num(cx + 6)
-                            + "\" y2=\"" + num(cy - 3) + "\"/><circle class=\"step\" cx=\"" + num(cx + 6) + "\" cy=\""
-                            + num(cy - 3) + "\" r=\"4\"/>";
-                case TRUTH:
-                default:
-                    return cross(cx, cy, 5);
-            }
+            return switch (swatch) {
+                case ANCHOR -> "<circle class=\"anchor\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"5\"/>";
+                case DISTANCE -> "<circle class=\"circle\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"7\"/>";
+                case OUTLIER_DISTANCE -> "<circle class=\"circle outlier\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"7\"/>";
+                case ESTIMATE -> "<circle class=\"estimate\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"6\"/>";
+                case HOLLOW_ESTIMATE, ALTERNATIVE -> "<circle class=\"alternative\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"6\"/>";
+                case REGION -> "<ellipse class=\"ellipse\" cx=\"" + x + "\" cy=\"" + y + "\" rx=\"8.5\" ry=\"6\"/>";
+                case RESIDUAL -> "<line class=\"residual\" x1=\"" + num(cx - 7) + "\" y1=\"" + y + "\" x2=\"" + num(cx + 7) + "\" y2=\"" + y + "\"/>";
+                case PATH -> "<line class=\"path\" x1=\"" + num(cx - 8) + "\" y1=\"" + num(cy + 3) + "\" x2=\"" + num(cx + 6)
+                        + "\" y2=\"" + num(cy - 3) + "\"/><circle class=\"step\" cx=\"" + num(cx + 6) + "\" cy=\""
+                        + num(cy - 3) + "\" r=\"4\"/>";
+                case TRUTH -> cross(cx, cy, 5);
+            };
         }
 
         private static double niceStep(Viewport view) {

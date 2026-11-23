@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -68,13 +70,13 @@ class TrilaterationSvgTest {
         Document withResiduals = parse(TrilaterationSvg.render(PROBLEM, result));
         Document without = parse(TrilaterationSvg.builder().residuals(false).confidence(0.9).build().toSvg(PROBLEM, result));
 
-        assertEquals(java.util.List.of("Anchor", "Measured distance", "Residual", "Estimate", "95% confidence region"), legendTexts(withResiduals));
-        assertEquals(java.util.List.of("Anchor", "Measured distance", "Estimate", "90% confidence region"), legendTexts(without));
+        assertEquals(List.of("Anchor", "Measured distance", "Residual", "Estimate", "95% confidence region"), legendTexts(withResiduals));
+        assertEquals(List.of("Anchor", "Measured distance", "Estimate", "90% confidence region"), legendTexts(without));
         assertEquals(0, countByClass(without, "line", "residual"));
     }
 
-    private static java.util.List<String> legendTexts(Document document) {
-        java.util.List<String> texts = new java.util.ArrayList<>();
+    private static List<String> legendTexts(Document document) {
+        List<String> texts = new ArrayList<>();
         NodeList nodes = document.getElementsByTagName("text");
         for (int i = 0; i < nodes.getLength(); i++) {
             Element e = (Element) nodes.item(i);

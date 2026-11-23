@@ -38,6 +38,7 @@ A rewrite with a new, self-contained API. The lists below cover everything that 
 
 ### Changed
 
+- Requires Java 17 or newer.
 - The model minimizes geometric range errors `||x - p_i|| - r_i` instead of squared-distance errors.
   With default settings this is equivalent to the 1.x weighting for well-posed problems.
 - Covariance and standard deviations are reported in distance units: scaled by the given

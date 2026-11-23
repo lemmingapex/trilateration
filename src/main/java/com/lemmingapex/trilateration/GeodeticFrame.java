@@ -344,10 +344,9 @@ public final class GeodeticFrame {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof GeodeticFrame)) {
+        if (!(o instanceof GeodeticFrame other)) {
             return false;
         }
-        GeodeticFrame other = (GeodeticFrame) o;
         return Double.compare(latitude, other.latitude) == 0
                 && Double.compare(longitude, other.longitude) == 0
                 && Double.compare(altitude, other.altitude) == 0;

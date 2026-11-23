@@ -36,23 +36,16 @@ final class LinearEstimator {
     private LinearEstimator() {
     }
 
-    /** Result of the linear estimate. */
-    static final class Estimate {
-        /** The estimated point. */
-        final double[] point;
-        /** Numerical rank of the anchor geometry, between 0 and n. */
-        final int rank;
-        /** Weighted centroid of the anchors. */
-        final double[] centroid;
-        /** Unit vector along which the anchors are least spread out (a null direction when rank < n). */
-        final double[] flattestDirection;
-
-        Estimate(double[] point, int rank, double[] centroid, double[] flattestDirection) {
-            this.point = point;
-            this.rank = rank;
-            this.centroid = centroid;
-            this.flattestDirection = flattestDirection;
-        }
+    /**
+     * Result of the linear estimate.
+     *
+     * @param point             the estimated point
+     * @param rank              numerical rank of the anchor geometry, between 0 and n
+     * @param centroid          weighted centroid of the anchors
+     * @param flattestDirection unit vector along which the anchors are least spread out (a null
+     *                          direction when rank &lt; n)
+     */
+    record Estimate(double[] point, int rank, double[] centroid, double[] flattestDirection) {
     }
 
     /**

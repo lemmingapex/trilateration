@@ -232,10 +232,9 @@ public final class TrilaterationProblem {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TrilaterationProblem)) {
+        if (!(o instanceof TrilaterationProblem that)) {
             return false;
         }
-        TrilaterationProblem that = (TrilaterationProblem) o;
         return Arrays.deepEquals(positions, that.positions)
                 && Arrays.equals(distances, that.distances)
                 && Arrays.equals(standardDeviations, that.standardDeviations)

@@ -16,7 +16,7 @@ noisy and inconsistent measurements, can down-weight outliers, and reports how u
   and a warning when the anchors cannot tell the position from its mirror image
 
 Positions are solved with the [Levenberg-Marquardt algorithm](https://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm)
-from [Hipparchus](https://hipparchus.org/). Requires Java 8 or newer.
+from [Hipparchus](https://hipparchus.org/). Requires Java 17 or newer.
 
 ## Installation
 
@@ -419,7 +419,7 @@ covers the linear and nonlinear least squares formulations in more depth.
 
 ## Building from source
 
-Requires JDK 17 or newer to build; the published jar targets Java 8.
+Requires JDK 17 or newer.
 
 ```sh
 ./gradlew build        # compile, test, Javadoc and coverage report

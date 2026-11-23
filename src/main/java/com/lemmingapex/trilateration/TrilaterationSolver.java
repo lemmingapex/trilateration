@@ -143,33 +143,33 @@ public final class TrilaterationSolver {
         }
 
         LinearEstimator.Estimate estimate = LinearEstimator.estimate(positions, distances, weights);
-        double length = lengthScale(positions, distances, estimate.centroid);
+        double length = lengthScale(positions, distances, estimate.centroid());
         TrilaterationFunction function = new TrilaterationFunction(positions, distances);
-        double[] start = problem.initialGuess() != null ? problem.initialGuess() : estimate.point;
+        double[] start = problem.initialGuess() != null ? problem.initialGuess() : estimate.point();
         if (trace != null) {
-            trace.linearEstimate = estimate.point.clone();
-            trace.centroid = estimate.centroid.clone();
-            trace.flattestDirection = estimate.flattestDirection.clone();
+            trace.linearEstimate = estimate.point().clone();
+            trace.centroid = estimate.centroid().clone();
+            trace.flattestDirection = estimate.flattestDirection().clone();
         }
 
         Fit best = fit(function, start, weights, knownNoise, length, trace);
-        int iterations = best.iterations;
-        int evaluations = best.evaluations;
+        int iterations = best.iterations();
+        int evaluations = best.evaluations();
         Fit alternative = null;
 
         if (mirrorCheck) {
             Fit mirror = null;
             try {
-                mirror = fit(function, reflect(best.point, estimate.centroid, estimate.flattestDirection),
+                mirror = fit(function, reflect(best.point(), estimate.centroid(), estimate.flattestDirection()),
                         weights, knownNoise, length, trace);
             } catch (TrilaterationException e) {
                 // The mirror start is only a second opinion; keep the first solution.
             }
             if (mirror != null) {
-                iterations += mirror.iterations;
-                evaluations += mirror.evaluations;
-                if (TrilaterationFunction.distance(mirror.point, best.point) > SAME_POINT_TOLERANCE * length) {
-                    double scale = best.scale;
+                iterations += mirror.iterations();
+                evaluations += mirror.evaluations();
+                if (TrilaterationFunction.distance(mirror.point(), best.point()) > SAME_POINT_TOLERANCE * length) {
+                    double scale = best.scale();
                     double bestCost = best.cost(weights, scale);
                     double mirrorCost = mirror.cost(weights, scale);
                     // Strictly better only: on a tie keep the first solution, which honours an initial guess.
@@ -188,9 +188,9 @@ public final class TrilaterationSolver {
         double noiseVariance = noiseVariance(best, weights, knownNoise, n);
         double[][] covariance = Double.isNaN(noiseVariance) ? null : covariance(function, best, weights, noiseVariance);
         double degreesOfFreedom = knownNoise ? Double.POSITIVE_INFINITY : effectiveDegreesOfFreedom(best, n);
-        return new TrilaterationResult(best.point, best.residuals, covariance, degreesOfFreedom,
-                alternative == null ? null : alternative.point,
-                iterations, evaluations, estimate.rank < n);
+        return new TrilaterationResult(best.point(), best.residuals(), covariance, degreesOfFreedom,
+                alternative == null ? null : alternative.point(),
+                iterations, evaluations, estimate.rank() < n);
     }
 
     /** Levenberg-Marquardt from {@code start}, followed by reweighting rounds for a robust loss. */
@@ -266,8 +266,8 @@ public final class TrilaterationSolver {
      */
     private static boolean isAmbiguous(Fit best, Fit other, double[] weights, boolean knownNoise, int n, double length) {
         double exact = EXACT_FIT_TOLERANCE * length;
-        if (rms(best.residuals) <= exact) {
-            return rms(other.residuals) <= exact;
+        if (rms(best.residuals()) <= exact) {
+            return rms(other.residuals()) <= exact;
         }
         double variance = noiseVariance(best, weights, knownNoise, n);
         if (!Double.isNaN(variance) && variance > 0) {
@@ -295,7 +295,7 @@ public final class TrilaterationSolver {
         }
         double sum = 0;
         for (int i = 0; i < weights.length; i++) {
-            sum += fit.robustWeights[i] * weights[i] * fit.residuals[i] * fit.residuals[i];
+            sum += fit.robustWeights()[i] * weights[i] * fit.residuals()[i] * fit.residuals()[i];
         }
         return sum / degreesOfFreedom;
     }
@@ -303,7 +303,7 @@ public final class TrilaterationSolver {
     /** Measurements minus unknowns, counting down-weighted measurements fractionally. */
     private static double effectiveDegreesOfFreedom(Fit fit, int n) {
         double sum = 0;
-        for (double w : fit.robustWeights) {
+        for (double w : fit.robustWeights()) {
             sum += w;
         }
         return sum - n;
@@ -317,12 +317,12 @@ public final class TrilaterationSolver {
      * conditioned.
      */
     private static double[][] covariance(TrilaterationFunction function, Fit fit, double[] weights, double noiseVariance) {
-        double[][] jacobian = function.jacobian(fit.point);
+        double[][] jacobian = function.jacobian(fit.point());
         int m = jacobian.length;
         int n = jacobian[0].length;
         double[][] normal = new double[n][n];
         for (int i = 0; i < m; i++) {
-            double w = weights[i] * fit.robustWeights[i];
+            double w = weights[i] * fit.robustWeights()[i];
             for (int a = 0; a < n; a++) {
                 for (int b = a; b < n; b++) {
                     normal[a][b] += w * jacobian[i][a] * jacobian[i][b];
@@ -399,25 +399,8 @@ public final class TrilaterationSolver {
     }
 
     /** One optimizer run (with its reweighting rounds) from one starting point. */
-    private static final class Fit {
-        final double[] point;
-        final double[] residuals;
-        final double[] robustWeights;
-        final double scale;
-        final int iterations;
-        final int evaluations;
-        final RobustLoss loss;
-
-        Fit(double[] point, double[] residuals, double[] robustWeights, double scale,
-            int iterations, int evaluations, RobustLoss loss) {
-            this.point = point;
-            this.residuals = residuals;
-            this.robustWeights = robustWeights;
-            this.scale = scale;
-            this.iterations = iterations;
-            this.evaluations = evaluations;
-            this.loss = loss;
-        }
+    private record Fit(double[] point, double[] residuals, double[] robustWeights, double scale,
+                       int iterations, int evaluations, RobustLoss loss) {
 
         /** {@code sum_i 2 rho(sqrt(w_i) r_i / scale)}; for least squares, chi-square over scale^2. */
         double cost(double[] weights, double scale) {

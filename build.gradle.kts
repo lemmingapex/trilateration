@@ -21,16 +21,9 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
-// The library targets Java 8 for the widest compatibility.
-tasks.compileJava {
-    options.release = 8
-    options.encoding = "UTF-8"
-    // "-options" silences the "source value 8 is obsolete" notice from newer JDKs.
-    options.compilerArgs.addAll(listOf("-Xlint:all,-options", "-Werror"))
-}
-
-// Tests only run on the build JDK, so they can use a modern language level (JUnit 6 needs 17).
-tasks.compileTestJava {
+// Java 17 is the minimum supported version. `--release` checks the APIs used, whichever newer
+// JDK runs the build, and sets the Java version that Gradle's published metadata advertises.
+tasks.withType<JavaCompile>().configureEach {
     options.release = 17
     options.encoding = "UTF-8"
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Werror"))
@@ -39,15 +32,9 @@ tasks.compileTestJava {
 // Documentation figures: generated from real solver output by `./gradlew renderDocs`.
 // A separate source set, so none of this code ships in the library jar. It lives in the
 // library's package to use package-private hooks such as SolverTrace.
-val docs by sourceSets.creating {
+val docs = sourceSets.create("docs") {
     compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath
     runtimeClasspath += sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath
-}
-
-tasks.named<JavaCompile>(docs.compileJavaTaskName) {
-    options.release = 17
-    options.encoding = "UTF-8"
-    options.compilerArgs.addAll(listOf("-Xlint:all", "-Werror"))
 }
 
 tasks.register<JavaExec>("renderDocs") {

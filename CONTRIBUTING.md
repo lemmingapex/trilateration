@@ -16,8 +16,8 @@ doclint), and writes a coverage report to `build/reports/jacoco/test/html`.
 
 Guidelines:
 
-- The library targets Java 8. Do not use newer language features or APIs in `src/main`. The
-  compiler's `--release 8` flag enforces this. Tests may use Java 17.
+- The library targets Java 17. Do not use newer language features or APIs. The compiler's
+  `--release 17` flag enforces this.
 - Keep Hipparchus out of the public API, so the math library can change without breaking users.
 - Every public type and member needs Javadoc.
 - Add a test for every bug fix and behaviour change, and an entry under "Unreleased" in

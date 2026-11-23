@@ -85,27 +85,21 @@ public final class RobustLoss {
     /** IRLS weight {@code psi(u) / u} for the scaled residual {@code u}. */
     double weight(double u) {
         double a = Math.abs(u);
-        switch (kind) {
-            case HUBER:
-                return a <= k ? 1.0 : k / a;
-            case CAUCHY:
-                return 1.0 / (1.0 + (u / k) * (u / k));
-            default:
-                return 1.0;
-        }
+        return switch (kind) {
+            case HUBER -> a <= k ? 1.0 : k / a;
+            case CAUCHY -> 1.0 / (1.0 + (u / k) * (u / k));
+            case NONE -> 1.0;
+        };
     }
 
     /** {@code 2 rho(u)}, scaled so that it equals {@code u^2} for small residuals. */
     double cost(double u) {
         double a = Math.abs(u);
-        switch (kind) {
-            case HUBER:
-                return a <= k ? u * u : 2 * k * a - k * k;
-            case CAUCHY:
-                return k * k * Math.log1p((u / k) * (u / k));
-            default:
-                return u * u;
-        }
+        return switch (kind) {
+            case HUBER -> a <= k ? u * u : 2 * k * a - k * k;
+            case CAUCHY -> k * k * Math.log1p((u / k) * (u / k));
+            case NONE -> u * u;
+        };
     }
 
     private static double requirePositive(double k) {
