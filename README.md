@@ -288,7 +288,7 @@ $r_i = \lVert x - p_i \rVert + \varepsilon_i$ to the unknown position $x$, with 
 $\varepsilon_i$ of standard deviation $\sigma_i$. The solver returns
 
 $$
-\hat{x} = \arg\min_{x} \sum_{i=1}^{m} w_i \, f_i(x)^2,
+\hat{x} = \arg\min_{x} \sum_{i=1}^{m} w_i f_i(x)^2,
 \qquad f_i(x) = \lVert x - p_i \rVert - r_i,
 \qquad w_i = \frac{1}{\sigma_i^2}
 $$
@@ -305,7 +305,7 @@ $$
 $$
 
 and Levenberg-Marquardt iterates damped Gauss-Newton steps
-$(J^\top W J + \lambda D)\,\delta = -J^\top W f$ until the cost stops decreasing. It converges fast
+$(J^\top W J + \lambda D) \delta = -J^\top W f$ until the cost stops decreasing. It converges fast
 from a good start, typically in 3 to 6 iterations, but it only finds the minimum nearest to where it
 starts. The cost has several minima when the geometry is poor or the noise is large, so the
 starting point matters.
@@ -317,14 +317,14 @@ weighted centroid, $q_i = p_i - c$ with $c = \sum w_i p_i / \sum w_i$, and the u
 $y = x - c$. Squaring each range equation gives
 
 $$
-\lVert y \rVert^2 - 2\, q_i^\top y + \lVert q_i \rVert^2 = r_i^2 .
+\lVert y \rVert^2 - 2 q_i^\top y + \lVert q_i \rVert^2 = r_i^2 .
 $$
 
 Every equation contains the same unknown quadratic term $\lVert y \rVert^2$. Subtracting the
 weighted mean of all equations (where $\sum w_i q_i = 0$) cancels it and leaves a **linear** system:
 
 $$
-2\, q_i^\top y \;=\; \lVert q_i \rVert^2 - \overline{\lVert q \rVert^2} \;-\; r_i^2 + \overline{r^2},
+2 q_i^\top y = \lVert q_i \rVert^2 - \overline{\lVert q \rVert^2} - r_i^2 + \overline{r^2},
 \qquad i = 1, \dots, m
 $$
 
@@ -350,8 +350,8 @@ in 2D, the linear system only determines the part of $y$ inside the anchors' lin
 remaining distance $h$ off that line or plane follows from Pythagoras, averaged over the anchors:
 
 $$
-h^2 = \overline{\, r_i^2 - \lVert y - q_i \rVert^2 \,},
-\qquad x_0 = c + y + h\, v .
+h^2 = \overline{r_i^2 - \lVert y - q_i \rVert^2},
+\qquad x_0 = c + y + h v .
 $$
 
 Starting there puts the optimizer next to one of the two mirror-image solutions instead of on the
@@ -363,7 +363,7 @@ A second Levenberg-Marquardt run starts from the first solution reflected across
 the anchors are flattest,
 
 $$
-x' = \hat{x} - 2\,\big((\hat{x} - c)^\top v\big)\, v ,
+x' = \hat{x} - 2 \big((\hat{x} - c)^\top v\big) v ,
 $$
 
 and the solver keeps whichever solution has the lower cost. This catches the most common wrong
@@ -376,7 +376,7 @@ the solve time and can be turned off with `mirrorCheck(false)`.
 ### Robust losses
 
 With a robust loss $\rho$, the solver minimizes $\sum_i \rho(u_i)$ over the scaled residuals
-$u_i = \sqrt{w_i}\, f_i / s$. The scale $s$ is 1 when standard deviations were given, and otherwise
+$u_i = \sqrt{w_i} f_i / s$. The scale $s$ is 1 when standard deviations were given, and otherwise
 the robust noise estimate $1.4826 \cdot \operatorname{median}_i |f_i|$. The solver uses
 iteratively reweighted least squares: it repeats the least squares fit with extra weights
 $\omega_i = \psi(u_i)/u_i$, recomputed from the latest residuals, until they settle.
@@ -391,14 +391,14 @@ $\omega_i = \psi(u_i)/u_i$, recomputed from the latest residuals, until they set
 The covariance is the usual linearized estimate,
 
 $$
-\Sigma = \hat{\sigma}^2 \,\big(J^\top W J\big)^{-1},
+\Sigma = \hat{\sigma}^2 \big(J^\top W J\big)^{-1},
 \qquad
 \hat{\sigma}^2 = \frac{\sum_i w_i f_i^2}{m - n},
 $$
 
 with $\hat{\sigma}^2 = 1$ when standard deviations were given. The inverse is computed with a
 single SVD of the small $n \times n$ matrix, which also detects directions the geometry leaves
-unconstrained. Confidence half-widths are $t_{m-n}\,\sqrt{\Sigma_{jj}}$, using a Student-t
+unconstrained. Confidence half-widths are $t_{m-n} \sqrt{\Sigma_{jj}}$, using a Student-t
 quantile when $\hat{\sigma}$ is estimated and a normal quantile when it is known. In tests with
 well-spread anchors the 95% intervals covered the true position 94.7–95.2% of the time. With
 nearly flat anchor layouts the error can be bimodal (the mirror image), which no covariance can
