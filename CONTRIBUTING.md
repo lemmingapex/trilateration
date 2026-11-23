@@ -24,6 +24,21 @@ Guidelines:
   [CHANGELOG.md](CHANGELOG.md).
 - Formatting follows [.editorconfig](.editorconfig): 4 spaces, LF line endings.
 
+## README figures
+
+The images in [docs/images](docs/images), including the animation, are generated from real solver
+output by [DocsFigures](src/docs/java/com/lemmingapex/trilateration/DocsFigures.java), which lives in a
+separate `docs` source set and is not part of the library jar. After changing the solver or the
+renderer, regenerate them and commit the result:
+
+```sh
+./gradlew renderDocs
+```
+
+CI fails when the committed figures differ from freshly generated ones. The inputs are fixed, so the
+output is reproducible. If a solver change makes a scenario stop showing what its caption claims
+(for example, the ambiguous example is no longer ambiguous), `renderDocs` fails with a message.
+
 ## Releasing
 
 Releases are published to Maven Central by the [Release workflow](.github/workflows/release.yml)

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="656" viewBox="0 0 560 656" role="img">
+<title>Trilateration result</title>
+<desc>Estimated position (55.99, 52.54) from 5 anchors, RMS residual 1.448.</desc>
+<style>svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--ring:rgba(11,11,11,.10);--distance:#2a78d6;--estimate:#eb6834;--path:#1baf7a}@media (prefers-color-scheme:dark){svg{--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--ring:rgba(255,255,255,.10);--distance:#3987e5;--estimate:#d95926;--path:#199e70}}.card{fill:var(--surface);stroke:var(--ring)}.grid{stroke:var(--grid);stroke-width:1}.tick{font:11px system-ui,-apple-system,'Segoe UI',sans-serif;fill:var(--muted);font-variant-numeric:tabular-nums}.circle{fill:var(--distance);fill-opacity:.05;stroke:var(--distance);stroke-width:1.5}.outlier{stroke-dasharray:6 4}.anchor{fill:var(--ink);stroke:var(--surface);stroke-width:2}.estimate{fill:var(--estimate);stroke:var(--surface);stroke-width:2}.ellipse{fill:var(--estimate);fill-opacity:.14;stroke:var(--estimate);stroke-width:2}.alternative{fill:var(--surface);fill-opacity:.6;stroke:var(--estimate);stroke-width:2;stroke-dasharray:3 2.5}.residual{stroke:var(--ink2);stroke-width:2;stroke-linecap:round}.path{fill:none;stroke:var(--path);stroke-width:2;stroke-linecap:round}.start{fill:var(--surface);stroke:var(--path);stroke-width:2}.step{fill:var(--path);stroke:var(--surface);stroke-width:2}.axis{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 5}.truth{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}.hit{fill:transparent}.caption{font:600 15px system-ui,-apple-system,'Segoe UI',sans-serif;fill:var(--ink)}.label,.legend{font:12px system-ui,-apple-system,'Segoe UI',sans-serif;fill:var(--ink2)}</style>
+<defs><clipPath id="trilateration-plot-29f8249b"><rect x="39.80" y="14.00" width="506.20" height="559.96"/></clipPath></defs>
+<rect class="card" x="0.5" y="0.5" width="559" height="655" rx="10"/>
+<g class="grid"><line x1="137.00" y1="14.00" x2="137.00" y2="573.96"/><line x1="244.52" y1="14.00" x2="244.52" y2="573.96"/><line x1="352.04" y1="14.00" x2="352.04" y2="573.96"/><line x1="459.55" y1="14.00" x2="459.55" y2="573.96"/><line x1="39.80" y1="476.76" x2="546.00" y2="476.76"/><line x1="39.80" y1="369.24" x2="546.00" y2="369.24"/><line x1="39.80" y1="261.72" x2="546.00" y2="261.72"/><line x1="39.80" y1="154.20" x2="546.00" y2="154.20"/><line x1="39.80" y1="46.69" x2="546.00" y2="46.69"/></g>
+<g class="tick"><text x="137.00" y="590.96" text-anchor="middle">20</text><text x="244.52" y="590.96" text-anchor="middle">40</text><text x="352.04" y="590.96" text-anchor="middle">60</text><text x="459.55" y="590.96" text-anchor="middle">80</text><text x="33.80" y="480.76" text-anchor="end">20</text><text x="33.80" y="373.24" text-anchor="end">40</text><text x="33.80" y="265.72" text-anchor="end">60</text><text x="33.80" y="158.20" text-anchor="end">80</text><text x="33.80" y="50.69" text-anchor="end">100</text></g>
+<g clip-path="url(#trilateration-plot-29f8249b)">
+<circle class="circle" cx="93.99" cy="197.21" r="262.88"/>
+<circle class="circle" cx="287.52" cy="68.19" r="229.02"/>
+<circle class="circle" cx="491.81" cy="207.96" r="197.84"/>
+<circle class="circle" cx="427.30" cy="487.51" r="202.67"/>
+<circle class="circle" cx="147.75" cy="519.77" r="290.84"/>
+<ellipse class="ellipse" cx="330.46" cy="301.83" rx="29.35" ry="26.45" transform="rotate(-3.41 330.46 301.83)"><title>95% confidence region</title></ellipse>
+<line class="residual" x1="334.40" y1="303.57" x2="330.46" y2="301.83"><title>Residual of anchor 1: -0.8007</title></line>
+<line class="residual" x1="328.92" y1="293.43" x2="330.46" y2="301.83"><title>Residual of anchor 2: 1.588</title></line>
+<line class="residual" x1="320.81" y1="307.45" x2="330.46" y2="301.83"><title>Residual of anchor 3: -2.077</title></line>
+<line class="residual" x1="333.58" y1="307.81" x2="330.46" y2="301.83"><title>Residual of anchor 4: 1.255</title></line>
+<line class="residual" x1="334.60" y1="296.89" x2="330.46" y2="301.83"><title>Residual of anchor 5: -1.199</title></line>
+<g><title>Anchor 1 at (12.00, 72.00), distance 48.90, residual -0.8007</title><circle class="hit" cx="93.99" cy="197.21" r="10.00"/><circle class="anchor" cx="93.99" cy="197.21" r="5.00"/></g>
+<g><title>Anchor 2 at (48.00, 96.00), distance 42.60, residual 1.588</title><circle class="hit" cx="287.52" cy="68.19" r="10.00"/><circle class="anchor" cx="287.52" cy="68.19" r="5.00"/></g>
+<g><title>Anchor 3 at (86.00, 70.00), distance 36.80, residual -2.077</title><circle class="hit" cx="491.81" cy="207.96" r="10.00"/><circle class="anchor" cx="491.81" cy="207.96" r="5.00"/></g>
+<g><title>Anchor 4 at (74.00, 18.00), distance 37.70, residual 1.255</title><circle class="hit" cx="427.30" cy="487.51" r="10.00"/><circle class="anchor" cx="427.30" cy="487.51" r="5.00"/></g>
+<g><title>Anchor 5 at (22.00, 12.00), distance 54.10, residual -1.199</title><circle class="hit" cx="147.75" cy="519.77" r="10.00"/><circle class="anchor" cx="147.75" cy="519.77" r="5.00"/></g>
+<g><title>Estimated position (55.99, 52.54)</title><circle class="hit" cx="330.46" cy="301.83" r="11.00"/><circle class="estimate" cx="330.46" cy="301.83" r="6.00"/></g>
+</g>
+<g class="legend-items"><circle class="anchor" cx="48.80" cy="611.96" r="5"/><text class="legend" x="63.80" y="615.96">Anchor</text><circle class="circle" cx="132.20" cy="611.96" r="7"/><text class="legend" x="147.20" y="615.96">Measured distance</text><line class="residual" x1="284.50" y1="611.96" x2="298.50" y2="611.96"/><text class="legend" x="306.50" y="615.96">Residual</text><circle class="estimate" cx="388.70" cy="611.96" r="6"/><text class="legend" x="403.70" y="615.96">Estimate</text><ellipse class="ellipse" cx="48.80" cy="631.96" rx="8.5" ry="6"/><text class="legend" x="63.80" y="635.96">95% confidence region</text></g>
+</svg>

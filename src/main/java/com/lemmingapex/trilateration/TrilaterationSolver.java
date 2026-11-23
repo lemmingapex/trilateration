@@ -127,6 +127,11 @@ public final class TrilaterationSolver {
      * @throws TrilaterationException if the optimizer fails to converge
      */
     public TrilaterationResult solve(TrilaterationProblem problem) {
+        return solve(problem, null);
+    }
+
+    /** Solves the problem, recording the solver's steps in {@code trace} when it is not {@code null}. */
+    TrilaterationResult solve(TrilaterationProblem problem, SolverTrace trace) {
         double[][] positions = problem.positions();
         double[] distances = problem.distances();
         double[] sigmas = problem.standardDeviations();
@@ -143,8 +148,13 @@ public final class TrilaterationSolver {
         double length = lengthScale(positions, distances, estimate.centroid);
         TrilaterationFunction function = new TrilaterationFunction(positions, distances);
         double[] start = problem.initialGuess() != null ? problem.initialGuess() : estimate.point;
+        if (trace != null) {
+            trace.linearEstimate = estimate.point.clone();
+            trace.centroid = estimate.centroid.clone();
+            trace.flattestDirection = estimate.flattestDirection.clone();
+        }
 
-        Fit best = fit(function, start, weights, knownNoise, length);
+        Fit best = fit(function, start, weights, knownNoise, length, trace);
         int iterations = best.iterations;
         int evaluations = best.evaluations;
         Fit alternative = null;
@@ -153,7 +163,7 @@ public final class TrilaterationSolver {
             Fit mirror = null;
             try {
                 mirror = fit(function, reflect(best.point, estimate.centroid, estimate.flattestDirection),
-                        weights, knownNoise, length);
+                        weights, knownNoise, length, trace);
             } catch (TrilaterationException e) {
                 // The mirror start is only a second opinion; keep the first solution.
             }
@@ -186,12 +196,16 @@ public final class TrilaterationSolver {
     }
 
     /** Levenberg-Marquardt from {@code start}, followed by reweighting rounds for a robust loss. */
-    private Fit fit(TrilaterationFunction function, double[] start, double[] weights, boolean knownNoise, double length) {
+    private Fit fit(TrilaterationFunction function, double[] start, double[] weights, boolean knownNoise, double length,
+                    SolverTrace trace) {
         int m = weights.length;
         double[] robustWeights = new double[m];
         Arrays.fill(robustWeights, 1.0);
+        if (trace != null) {
+            trace.startRun(start);
+        }
 
-        Optimum optimum = optimize(function, start, weights);
+        Optimum optimum = optimize(function, start, weights, trace);
         int iterations = optimum.getIterations();
         int evaluations = optimum.getEvaluations();
         double[] point = optimum.getPoint().toArray();
@@ -214,7 +228,7 @@ public final class TrilaterationSolver {
                 for (int i = 0; i < m; i++) {
                     combined[i] = weights[i] * robustWeights[i];
                 }
-                optimum = optimize(function, point, combined);
+                optimum = optimize(function, point, combined, trace);
                 iterations += optimum.getIterations();
                 evaluations += optimum.getEvaluations();
                 point = optimum.getPoint().toArray();
@@ -224,15 +238,22 @@ public final class TrilaterationSolver {
         return new Fit(point, function.residuals(point), robustWeights, scale, iterations, evaluations, robustLoss);
     }
 
-    private Optimum optimize(TrilaterationFunction function, double[] start, double[] weights) {
-        LeastSquaresProblem leastSquaresProblem = new LeastSquaresBuilder()
+    private Optimum optimize(TrilaterationFunction function, double[] start, double[] weights, SolverTrace trace) {
+        LeastSquaresBuilder builder = new LeastSquaresBuilder()
                 .model(function)
                 .target(new double[weights.length])
                 .start(start)
                 .weight(new DiagonalMatrix(weights))
                 .maxIterations(maxIterations)
-                .maxEvaluations(maxEvaluations)
-                .build();
+                .maxEvaluations(maxEvaluations);
+        if (trace != null) {
+            // Called after every accepted step; never stops the optimizer by itself.
+            builder.checker((iteration, previous, current) -> {
+                trace.step(current.getPoint().toArray());
+                return false;
+            });
+        }
+        LeastSquaresProblem leastSquaresProblem = builder.build();
         try {
             return optimizer.optimize(leastSquaresProblem);
         } catch (MathRuntimeException e) {

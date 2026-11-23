@@ -20,6 +20,11 @@ A rewrite with a new, self-contained API. The lists below cover everything that 
   reweighted least squares (`robustLoss(RobustLoss)`).
 - `TrilaterationResult.getConfidenceHalfWidths(double)`, using Student-t quantiles when the noise
   level is estimated from the residuals.
+- `TrilaterationSvg`, a dependency-free renderer that draws 2D results as SVG: distance circles,
+  anchors, the estimate with its confidence region, residuals and any alternative, on a coordinate
+  grid with a legend, in light and dark mode.
+- README figures and an animation of the solver, generated from real solver output by
+  `./gradlew renderDocs` and checked for staleness in CI.
 - `TrilaterationProblem`, a validated, immutable problem description with optional per-measurement
   standard deviations and an optional initial guess.
 - `TrilaterationResult` with the position, residuals, RMS, covariance, per-coordinate standard

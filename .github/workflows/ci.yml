@@ -31,6 +31,16 @@ jobs:
 
       - run: ./gradlew build
 
+      - name: Check README figures are up to date
+        if: matrix.java == 25
+        run: |
+          ./gradlew renderDocs
+          if [ -n "$(git status --porcelain -- docs/images)" ]; then
+            git status --short -- docs/images
+            echo "The figures in docs/images are stale: run ./gradlew renderDocs and commit the result."
+            exit 1
+          fi
+
       - name: Upload test and coverage reports
         if: always() && matrix.java == 25
         uses: actions/upload-artifact@v7

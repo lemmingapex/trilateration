@@ -5,7 +5,7 @@
 [![Javadoc](https://javadoc.io/badge2/com.lemmingapex.trilateration/trilateration/javadoc.svg)](https://javadoc.io/doc/com.lemmingapex.trilateration/trilateration)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-![Three circles centred on known anchor positions, intersecting at the estimated location](Trilateration.png)
+![Five anchors on a coordinate grid, each with a blue circle of measured distance. The circles cross near the estimated position, marked in orange with its 95% confidence region.](docs/images/solution.svg)
 
 A small Java library that estimates an unknown position from the known positions of anchors and the
 measured distance to each one. It works in any number of dimensions (1D, 2D, 3D, ...), tolerates
@@ -91,6 +91,8 @@ TrilaterationSolver solver = TrilaterationSolver.builder()
         .build();
 ```
 
+![Six anchors, one of whose distance circles (dashed) is 25 units too large. The least squares estimate is pulled away from the true position; the Huber estimate sits on it.](docs/images/outlier.svg)
+
 In a test with 8 anchors, noise 0.5 and one distance 20 units too long, the mean position error was
 5.43 with least squares, 0.58 with Huber and 0.46 with Cauchy. Without outliers, both cost about 3%
 in accuracy. Robust fitting needs redundancy (from about `n + 2` anchors in `n` dimensions) and
@@ -124,6 +126,8 @@ A unique position needs at least `n + 1` anchors that do not all lie in a common
 a line (2D) or plane (3D), the position and its mirror image across that line or plane fit the
 measurements about equally well. The solver then returns the better of the two and reports the other:
 
+![Four nearly collinear anchors. The estimate above the line and the alternative, its mirror image below the line, both lie where the circles almost meet.](docs/images/ambiguous.svg)
+
 ```java
 if (result.isAmbiguous()) {
     double[] other = result.getAlternativePoint().get();
@@ -156,7 +160,38 @@ If the optimizer does not converge within these limits, `solve` throws `Trilater
 Invalid input (mismatched lengths, negative or non-finite distances, ...) throws
 `IllegalArgumentException` when the problem is created.
 
+### Visualizing 2D results
+
+`TrilaterationSvg` draws a two-dimensional result as an SVG image: the distance circles, the
+anchors, the estimate with its confidence region, each measurement's residual and, when the result
+is ambiguous, the alternative, on a coordinate grid with a legend. It needs no graphics libraries,
+has its own light and dark colours, and gives each anchor a tooltip with its distance and residual.
+The static figures in this README are drawn with it.
+
+```java
+TrilaterationProblem problem = TrilaterationProblem.of(positions, distances);
+TrilaterationResult result = solver.solve(problem);
+
+String svg = TrilaterationSvg.render(problem, result);
+Files.write(Paths.get("solution.svg"), svg.getBytes(StandardCharsets.UTF_8));
+
+// Or with options:
+String labelled = TrilaterationSvg.builder()
+        .width(640)            // pixels, default 480
+        .confidence(0.99)      // ellipse coverage, default 0.95
+        .labels(true)          // number the anchors, label the estimate
+        .wholeCircles(true)    // fit every circle; by default large ones are cropped
+        .residuals(false)      // hide the residual segments (shown by default)
+        .legend(false)         // hide the legend (shown by default)
+        .build()
+        .toSvg(problem, result);
+```
+
 ## How it works
+
+![Animation of one solve: the distance circles grow around five anchors; the closed-form estimate appears; Levenberg-Marquardt steps to the best fit; the mirror check restarts from the reflected point and converges to a much worse fit; the final estimate is shown with its 95% confidence ellipse.](docs/images/solver.svg)
+
+The animation replays a real solve, step by step, recorded from the solver itself.
 
 ### The model
 

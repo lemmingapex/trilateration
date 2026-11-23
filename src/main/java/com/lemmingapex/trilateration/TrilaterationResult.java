@@ -145,6 +145,11 @@ public final class TrilaterationResult {
         });
     }
 
+    /** Degrees of freedom of the noise estimate, or positive infinity when the noise is known. */
+    double degreesOfFreedom() {
+        return degreesOfFreedom;
+    }
+
     /**
      * Reports whether a distinctly different position explains the measurements about as well as
      * {@link #getPoint()}. This happens when the anchors are (nearly) collinear in 2D or coplanar in

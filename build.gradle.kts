@@ -36,6 +36,28 @@ tasks.compileTestJava {
     options.compilerArgs.addAll(listOf("-Xlint:all", "-Werror"))
 }
 
+// Documentation figures: generated from real solver output by `./gradlew renderDocs`.
+// A separate source set, so none of this code ships in the library jar. It lives in the
+// library's package to use package-private hooks such as SolverTrace.
+val docs by sourceSets.creating {
+    compileClasspath += sourceSets.main.get().output + sourceSets.main.get().compileClasspath
+    runtimeClasspath += sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath
+}
+
+tasks.named<JavaCompile>(docs.compileJavaTaskName) {
+    options.release = 17
+    options.encoding = "UTF-8"
+    options.compilerArgs.addAll(listOf("-Xlint:all", "-Werror"))
+}
+
+tasks.register<JavaExec>("renderDocs") {
+    group = "documentation"
+    description = "Regenerates the README figures in docs/images from real solver output."
+    classpath = docs.runtimeClasspath
+    mainClass = "com.lemmingapex.trilateration.DocsFigures"
+    args(layout.projectDirectory.dir("docs/images").asFile.absolutePath)
+}
+
 tasks.jar {
     manifest {
         attributes(
