@@ -377,7 +377,7 @@ the solve time and can be turned off with `mirrorCheck(false)`.
 
 With a robust loss $\rho$, the solver minimizes $\sum_i \rho(u_i)$ over the scaled residuals
 $u_i = \sqrt{w_i} f_i / s$. The scale $s$ is 1 when standard deviations were given, and otherwise
-the robust noise estimate $1.4826 \cdot \operatorname{median}_i |f_i|$. The solver uses
+the robust noise estimate $1.4826 \cdot \mathrm{median}_i |f_i|$. The solver uses
 iteratively reweighted least squares: it repeats the least squares fit with extra weights
 $\omega_i = \psi(u_i)/u_i$, recomputed from the latest residuals, until they settle.
 
