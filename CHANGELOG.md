@@ -10,8 +10,8 @@ A rewrite with a new, self-contained API. The lists below cover everything that 
 
 ### Added
 
-- `TrilaterationSolver`, an immutable and thread-safe entry point, with a builder for iteration
-  limits and convergence tolerances.
+- `TrilaterationSolver`, an immutable and thread-safe entry point, with a builder for the
+  evaluation limit and convergence tolerances.
 - Mirror check: a second optimizer run from the first solution reflected across the anchors'
   flattest plane, which avoids most local minima (`mirrorCheck(boolean)`, on by default).
 - `TrilaterationResult.isAmbiguous()` and `getAlternativePoint()` report a mirror-image solution

@@ -177,14 +177,15 @@ origin and the height of the 2D plane yourself, use `GeodeticFrame.at(latitude, 
 TrilaterationSolver solver = TrilaterationSolver.builder()
         .robustLoss(RobustLoss.HUBER)       // default RobustLoss.NONE (least squares)
         .mirrorCheck(true)                  // default true, see "How it works"
-        .maxIterations(200)                 // per optimizer run, default 1000
         .maxEvaluations(400)                // per optimizer run, default 1000
         .costRelativeTolerance(1e-8)        // default 1e-10
         .parameterRelativeTolerance(1e-8)   // default 1e-10
         .build();
 ```
 
-If the optimizer does not converge within these limits, `solve` throws `TrilaterationException`.
+A typical run needs 5 to 15 model evaluations, and every iteration needs at least one, so
+`maxEvaluations` bounds the iterations too. If the optimizer does not converge within the limit,
+`solve` throws `TrilaterationException`.
 Invalid input (mismatched lengths, negative or non-finite distances, ...) throws
 `IllegalArgumentException` when the problem is created.
 

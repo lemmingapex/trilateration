@@ -41,10 +41,10 @@ import org.hipparchus.optim.nonlinear.vector.leastsquares.LevenbergMarquardtOpti
  */
 public final class TrilaterationSolver {
 
-    /** Default maximum number of optimizer iterations, per optimizer run. */
-    public static final int DEFAULT_MAX_ITERATIONS = 1000;
-
-    /** Default maximum number of model evaluations, per optimizer run. */
+    /**
+     * Default maximum number of model evaluations, per optimizer run. Every iteration evaluates
+     * the model at least once, so this also bounds the number of iterations.
+     */
     public static final int DEFAULT_MAX_EVALUATIONS = 1000;
 
     /**
@@ -75,7 +75,6 @@ public final class TrilaterationSolver {
     /** Converts a median absolute deviation into a standard deviation for Gaussian noise. */
     private static final double MAD_TO_SIGMA = 1.4826;
 
-    private final int maxIterations;
     private final int maxEvaluations;
     private final LevenbergMarquardtOptimizer optimizer;
     private final RobustLoss robustLoss;
@@ -89,7 +88,6 @@ public final class TrilaterationSolver {
     }
 
     private TrilaterationSolver(Builder builder) {
-        this.maxIterations = builder.maxIterations;
         this.maxEvaluations = builder.maxEvaluations;
         this.robustLoss = builder.robustLoss;
         this.mirrorCheck = builder.mirrorCheck;
@@ -244,7 +242,8 @@ public final class TrilaterationSolver {
                 .target(new double[weights.length])
                 .start(start)
                 .weight(new DiagonalMatrix(weights))
-                .maxIterations(maxIterations)
+                // Every iteration costs at least one evaluation, so the evaluation limit bounds both.
+                .maxIterations(Integer.MAX_VALUE)
                 .maxEvaluations(maxEvaluations);
         if (trace != null) {
             // Called after every accepted step; never stops the optimizer by itself.
@@ -435,7 +434,6 @@ public final class TrilaterationSolver {
      */
     public static final class Builder {
 
-        private int maxIterations = DEFAULT_MAX_ITERATIONS;
         private int maxEvaluations = DEFAULT_MAX_EVALUATIONS;
         private double costRelativeTolerance = 1e-10;
         private double parameterRelativeTolerance = 1e-10;
@@ -446,23 +444,14 @@ public final class TrilaterationSolver {
         }
 
         /**
-         * Sets the maximum number of iterations of each optimizer run (default
-         * {@value TrilaterationSolver#DEFAULT_MAX_ITERATIONS}).
-         *
-         * @param maxIterations maximum number of optimizer iterations, at least 1
-         * @return this builder
-         */
-        public Builder maxIterations(int maxIterations) {
-            if (maxIterations < 1) {
-                throw new IllegalArgumentException("maxIterations must be at least 1 but was " + maxIterations + ".");
-            }
-            this.maxIterations = maxIterations;
-            return this;
-        }
-
-        /**
          * Sets the maximum number of model evaluations of each optimizer run (default
-         * {@value TrilaterationSolver#DEFAULT_MAX_EVALUATIONS}).
+         * {@value TrilaterationSolver#DEFAULT_MAX_EVALUATIONS}). Every iteration evaluates the
+         * model at least once, so this also bounds the number of iterations. A run that reaches
+         * the limit makes {@code solve} throw {@link TrilaterationException}, except in the
+         * mirror check, where the first solution is kept.
+         *
+         * <p>A typical run needs 5 to 15 evaluations; a few hundred are rare and occur only with
+         * very noisy or inconsistent measurements, or with an initial guess far from the anchors.
          *
          * @param maxEvaluations maximum number of model evaluations, at least 1
          * @return this builder

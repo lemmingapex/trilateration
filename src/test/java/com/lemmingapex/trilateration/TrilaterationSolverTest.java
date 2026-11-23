@@ -543,8 +543,23 @@ class TrilaterationSolverTest {
         }
 
         @Test
+        void evaluationLimitAlsoBoundsIterations() {
+            TrilaterationProblem problem = TrilaterationProblem.of(new double[][] {{0, 0}, {10, 0}, {0, 10}}, new double[] {5, 7, 8})
+                    .withInitialGuess(300, -200);
+            TrilaterationResult unlimited = TrilaterationSolver.builder().mirrorCheck(false).build().solve(problem);
+            int needed = unlimited.getEvaluations();
+            assertTrue(unlimited.getIterations() < needed, unlimited.toString());
+
+            TrilaterationSolver justEnough = TrilaterationSolver.builder().mirrorCheck(false).maxEvaluations(needed).build();
+            assertEquals(needed, justEnough.solve(problem).getEvaluations());
+
+            TrilaterationSolver tooFew = TrilaterationSolver.builder().mirrorCheck(false).maxEvaluations(needed - 1).build();
+            assertThrows(TrilaterationException.class, () -> tooFew.solve(problem));
+        }
+
+        @Test
         void builderRejectsInvalidSettings() {
-            assertThrows(IllegalArgumentException.class, () -> TrilaterationSolver.builder().maxIterations(0));
+            assertThrows(IllegalArgumentException.class, () -> TrilaterationSolver.builder().maxEvaluations(0));
             assertThrows(IllegalArgumentException.class, () -> TrilaterationSolver.builder().maxEvaluations(-1));
             assertThrows(IllegalArgumentException.class, () -> TrilaterationSolver.builder().costRelativeTolerance(-1));
             assertThrows(IllegalArgumentException.class, () -> TrilaterationSolver.builder().parameterRelativeTolerance(Double.NaN));
@@ -553,7 +568,6 @@ class TrilaterationSolverTest {
         @Test
         void customToleranceStillConverges() {
             TrilaterationSolver solver = TrilaterationSolver.builder()
-                    .maxIterations(50)
                     .maxEvaluations(100)
                     .costRelativeTolerance(1e-6)
                     .parameterRelativeTolerance(1e-6)
