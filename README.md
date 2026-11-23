@@ -187,6 +187,65 @@ String labelled = TrilaterationSvg.builder()
         .toSvg(problem, result);
 ```
 
+## Applications
+
+Anything that measures distances to points at known positions can be located with this library.
+Common uses:
+
+- **Indoor positioning with Bluetooth or Wi-Fi.** A phone or tag estimates its distance to fixed
+  beacons or access points from signal strength (RSSI) or from Wi-Fi round-trip time (RTT). RSSI
+  distances are coarse and get worse with range, so pass standard deviations proportional to the
+  distance, and use a robust loss for signals reflected off walls
+  (see [Measurement uncertainty](#measurement-uncertainty) and [Outliers](#outliers)).
+- **Ultra-wideband (UWB) tracking.** UWB two-way ranging measures distances to within about 10 cm,
+  which suits warehouse asset tracking, sports tracking and indoor drones. Anchors mounted at a
+  single ceiling height are coplanar, so in 3D a position and its mirror image above the ceiling
+  fit equally well. `isAmbiguous()` reports this. Mounting anchors at different heights, or
+  passing `withInitialGuess`, resolves it.
+- **Robot and vehicle localization.** A robot ranging to beacons or landmarks (UWB, ultrasonic,
+  radio) solves for its position every cycle. A solve takes microseconds, so this fits inside a
+  control loop.
+- **Underwater acoustic navigation.** In long-baseline (LBL) systems, a vehicle times acoustic
+  pings to transponders on the seabed. The travel times multiplied by the speed of sound are the
+  distances. Seabed transponders are often nearly coplanar, so the mirror check matters here, and
+  a depth sensor settles any ambiguity.
+- **Surveying and layout.** A point is located from tape or laser distance measurements to known
+  control points, in a local grid or a projected one such as UTM. The solver works relative to
+  the anchors' centroid, so large coordinates keep full precision. The confidence intervals show
+  whether the result meets a tolerance.
+- **Sensor network self-localization.** A newly installed node is placed from its ranges to nodes
+  with known positions, and then serves as an anchor for the next node.
+- **Beyond physical space.** The solver works in any number of dimensions. For example, it can
+  place a new item into an existing embedding, such as one from multidimensional scaling, given
+  the item's distances to items already placed.
+
+For a moving target, reuse one solver, start each solve from the previous position, and pass the
+covariance to a tracking filter as its measurement noise:
+
+```java
+TrilaterationProblem problem = TrilaterationProblem.of(anchors, distances)
+        .withStandardDeviations(sigmas);
+if (previous != null) {
+    problem = problem.withInitialGuess(previous);
+}
+TrilaterationResult fix = solver.solve(problem);
+previous = fix.getPoint();
+fix.getCovariance().ifPresent(r -> kalmanFilter.update(fix.getPoint(), r));
+```
+
+### What it does not cover
+
+- **Measuring distances.** You convert raw measurements to distances yourself, for example with
+  a path-loss model for RSSI, or by multiplying time of flight by the speed of light or sound.
+- **Unknown clock offsets.** GNSS pseudoranges and time difference of arrival (TDOA) measure
+  distance plus an unknown offset shared by every measurement. Solving them needs that offset as
+  an extra unknown, which this model does not include.
+- **Angles.** Locating a position from bearings (triangulation) is a different problem.
+- **Latitude and longitude.** Geographic coordinates are not Euclidean. Convert the anchors to a
+  local east-north-up frame, UTM or ECEF first, then convert the result back.
+- **Tracking over time.** Each solve is a single snapshot. Smoothing and prediction belong in a
+  filter, as above.
+
 ## How it works
 
 ![Animation of one solve: the distance circles grow around five anchors; the closed-form estimate appears; Levenberg-Marquardt steps to the best fit; the mirror check restarts from the reflected point and converges to a much worse fit; the final estimate is shown with its 95% confidence ellipse.](docs/images/solver.svg)
