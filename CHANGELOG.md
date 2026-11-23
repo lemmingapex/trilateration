@@ -23,6 +23,8 @@ A rewrite with a new, self-contained API. The lists below cover everything that 
 - `TrilaterationSvg`, a dependency-free renderer that draws 2D results as SVG: distance circles,
   anchors, the estimate with its confidence region, residuals and any alternative, on a coordinate
   grid with a legend, in light and dark mode.
+- `GeodeticFrame`, which converts latitude, longitude and altitude (WGS84) to a local east-north-up
+  frame in metres and back, so anchors given in geographic coordinates can be solved directly.
 - README figures and an animation of the solver, generated from real solver output by
   `./gradlew renderDocs` and checked for staleness in CI.
 - `TrilaterationProblem`, a validated, immutable problem description with optional per-measurement

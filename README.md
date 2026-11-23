@@ -143,6 +143,34 @@ TrilaterationProblem problem = TrilaterationProblem.of(positions, distances)
         .withInitialGuess(previousPosition);
 ```
 
+### Latitude and longitude
+
+Latitude and longitude are angles, not distances, so they cannot go to the solver directly.
+`GeodeticFrame` converts them to metres east, north and up of an origin near the anchors, on the
+WGS84 ellipsoid that GNSS receivers use, and converts the answer back:
+
+```java
+double[][] anchors = {
+        { 40.01490, -105.26970 },   // latitude, longitude in degrees
+        { 40.01520, -105.26890 },
+        { 40.01430, -105.26850 },
+        { 40.01410, -105.26960 } };
+double[] distances = { 51.1, 62.2, 72.3, 73.5 };   // metres
+
+GeodeticFrame frame = GeodeticFrame.around(anchors);
+TrilaterationResult result = solver.solve(frame.toLocal(anchors), distances);
+
+double[] latLon = frame.toGeodetic(result.getPoint());   // [40.014681, -105.269180]
+double[] sigma = result.getStandardDeviation().get();   // [0.40, 0.36] metres east and north
+```
+
+Add an altitude in metres, `{ latitude, longitude, altitude }`, to solve in 3D. The local frame is
+an exact rotation of Earth-centred coordinates, so 3D distances are preserved at any scale. In 2D,
+the points are projected onto a flat plane, which changes distances by about 3 mm at 10 km and 3 m
+at 100 km. Use 3D when the anchors are much higher or lower than the target.
+`GeodeticFrame.around` handles anchors on both sides of the 180° meridian. To choose the
+origin and the height of the 2D plane yourself, use `GeodeticFrame.at(latitude, longitude, altitude)`.
+
 ### Solver settings
 
 ```java
@@ -241,8 +269,9 @@ fix.getCovariance().ifPresent(r -> kalmanFilter.update(fix.getPoint(), r));
   distance plus an unknown offset shared by every measurement. Solving them needs that offset as
   an extra unknown, which this model does not include.
 - **Angles.** Locating a position from bearings (triangulation) is a different problem.
-- **Latitude and longitude.** Geographic coordinates are not Euclidean. Convert the anchors to a
-  local east-north-up frame, UTM or ECEF first, then convert the result back.
+- **Distances along the Earth's surface over long ranges.** Range measurements are treated as
+  straight lines. Great-circle or geodesic distances over hundreds of kilometres need a geodesic
+  library such as GeographicLib.
 - **Tracking over time.** Each solve is a single snapshot. Smoothing and prediction belong in a
   filter, as above.
 
