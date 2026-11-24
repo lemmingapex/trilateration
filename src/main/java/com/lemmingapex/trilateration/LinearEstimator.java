@@ -42,8 +42,8 @@ final class LinearEstimator {
      * @param point             the estimated point
      * @param rank              numerical rank of the anchor geometry, between 0 and n
      * @param centroid          weighted centroid of the anchors
-     * @param flattestDirection unit vector along which the anchors are least spread out (a null
-     *                          direction when rank &lt; n)
+     * @param flattestDirection unit vector along which the anchors are least spread out; when
+     *                          rank &lt; n, the null direction along which the point was offset
      */
     record Estimate(double[] point, int rank, double[] centroid, double[] flattestDirection) {
     }
@@ -145,6 +145,8 @@ final class LinearEstimator {
         for (int j = 0; j < n; j++) {
             point[j] = centroid[j] + y[j];
         }
-        return new Estimate(point, rank, centroid, v.getColumn(n - 1));
+        // With rank < n, the null direction the point was offset along: reflecting across its normal
+        // plane then yields the mirror solution even when more than one direction is unconstrained.
+        return new Estimate(point, rank, centroid, v.getColumn(Math.min(rank, n - 1)));
     }
 }

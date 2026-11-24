@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Fixed
+
+- `isAmbiguous()` returned `false` when a whole circle of positions fits the measurements: collinear
+  anchors or at most two anchors in 3D, or a single anchor in 2D. These results are now ambiguous,
+  with a mirror-image alternative.
+
 ## [2.0.0] - 2026-11-24
 
 A rewrite with a new, self-contained API. The lists below cover everything that changed for 1.x users.
@@ -83,6 +91,7 @@ A rewrite with a new, self-contained API. The lists below cover everything that 
 
 - Initial release.
 
+[Unreleased]: https://github.com/lemmingapex/trilateration/compare/v2.0.0...HEAD
 [2.0.0]: https://github.com/lemmingapex/trilateration/compare/v1.0.2...v2.0.0
 [1.0.2]: https://github.com/lemmingapex/trilateration/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/lemmingapex/trilateration/compare/v1.0.0...v1.0.1

@@ -345,6 +345,29 @@ class TrilaterationSolverTest {
             assertArrayEquals(new double[] {point[0], -point[1]}, alternative, 1e-6);
         }
 
+        static Stream<Arguments> underdetermined() {
+            // Anchors spanning at least two dimensions fewer than the space: a whole circle (or
+            // sphere) of points fits exactly, so the result must not look unambiguous.
+            return Stream.of(
+                    Arguments.argumentSet("3D collinear", new double[][] {{0, 0, 0}, {10, 0, 0}, {20, 0, 0}}, new double[] {3, 4, 5}),
+                    Arguments.argumentSet("3D two anchors", new double[][] {{0, 0, 0}, {10, 0, 0}}, new double[] {3, 4, 5}),
+                    Arguments.argumentSet("3D one anchor", new double[][] {{2, 3, 4}}, new double[] {5, 5, 5}),
+                    Arguments.argumentSet("2D one anchor", new double[][] {{1, 1}}, new double[] {5, 1}));
+        }
+
+        @ParameterizedTest
+        @MethodSource("underdetermined")
+        void underdeterminedGeometryIsAmbiguous(double[][] positions, double[] truth) {
+            TrilaterationResult result = SOLVER.solve(positions, exactDistances(positions, truth));
+
+            assertTrue(result.isDegenerateGeometry());
+            assertTrue(result.isAmbiguous());
+            double[] alternative = result.getAlternativePoint().orElseThrow();
+            assertEquals(0, result.getRms(), 1e-9);
+            assertArrayEquals(exactDistances(positions, truth), exactDistances(positions, alternative), 1e-6);
+            assertTrue(TrilaterationFunction.distance(result.getPoint(), alternative) > 1e-3);
+        }
+
         @Test
         void initialGuessWinsATie() {
             double[][] positions = {{0, 0}, {50, 0}, {100, 0}};
