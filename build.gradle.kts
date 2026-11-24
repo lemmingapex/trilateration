@@ -89,8 +89,12 @@ tasks.jacocoTestReport {
 // Sign when a key is configured: in memory (signingInMemoryKey, as the release workflow does) or
 // as a keyring file (signing.keyId, signing.password and signing.secretKeyRingFile, for example in
 // ~/.gradle/gradle.properties). Without a key, builds and publishToMavenLocal still work, but
-// publishing to Maven Central fails before anything is uploaded.
-val signingConfigured = listOf("signingInMemoryKey", "signing.keyId").any { providers.gradleProperty(it).isPresent }
+// publishing to Maven Central fails before anything is uploaded. A property counts only when it is
+// non-blank: GitHub Actions passes a missing secret as an empty string. A lone signing.keyId, left
+// in ~/.gradle/gradle.properties for another project, does not turn signing on.
+fun isNonBlankProperty(name: String) = providers.gradleProperty(name).orNull?.isNotBlank() == true
+val signingConfigured = isNonBlankProperty("signingInMemoryKey") ||
+    listOf("signing.keyId", "signing.password", "signing.secretKeyRingFile").all(::isNonBlankProperty)
 
 mavenPublishing {
     publishToMavenCentral()
