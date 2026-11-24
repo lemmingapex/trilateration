@@ -38,13 +38,14 @@ val docs = sourceSets.create("docs") {
 }
 
 dependencies {
-    // The tracking animation's Kalman filter. The library itself does not depend on it.
-    docs.implementationConfigurationName(libs.hipparchus.filtering)
+    // Used only by the docs figures; the library itself depends on neither.
+    docs.implementationConfigurationName(libs.hipparchus.filtering) // the tracking animation's Kalman filter
+    docs.implementationConfigurationName(libs.jsvg) // renders the PNG copies of the figures
 }
 
 tasks.register<JavaExec>("renderDocs") {
     group = "documentation"
-    description = "Regenerates the README figures in docs/images from real solver output."
+    description = "Regenerates the README figures in docs/images, as SVG and PNG, from real solver output."
     classpath = docs.runtimeClasspath
     mainClass = "com.lemmingapex.trilateration.DocsFigures"
     args(layout.projectDirectory.dir("docs/images").asFile.absolutePath)

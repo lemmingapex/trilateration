@@ -26,7 +26,8 @@ import com.lemmingapex.trilateration.SvgWriter.LegendItem;
 import com.lemmingapex.trilateration.SvgWriter.Swatch;
 
 /**
- * Generates the README figures from real solver output. Run with {@code ./gradlew renderDocs}.
+ * Generates the README figures from real solver output, each as an SVG and a PNG copy (see
+ * {@link PngFigures}). Run with {@code ./gradlew renderDocs}.
  *
  * <p>Every input is fixed, so the output is reproducible: rerunning without code changes leaves
  * the files unchanged, and CI checks that they are up to date.
@@ -51,8 +52,14 @@ public final class DocsFigures {
         System.out.println("Wrote figures to " + out.toAbsolutePath());
     }
 
+    /** Writes an SVG figure, and a PNG copy beside it unless that is already up to date. */
     private static void write(Path file, String svg) throws IOException {
         Files.writeString(file, svg, StandardCharsets.UTF_8);
+        String name = file.getFileName().toString();
+        Path png = file.resolveSibling(name.substring(0, name.length() - ".svg".length()) + ".png");
+        if (PngFigures.update(png, svg)) {
+            System.out.println("Rendered " + png.getFileName());
+        }
     }
 
     /** Distances from {@code truth} to each anchor plus a fixed error, rounded to 0.1. */

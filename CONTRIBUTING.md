@@ -35,9 +35,17 @@ renderer, regenerate them and commit the result:
 ./gradlew renderDocs
 ```
 
-CI fails when the committed figures differ from freshly generated ones. The inputs are fixed, so the
-output is reproducible. If a solver change makes a scenario stop showing what its caption claims
-(for example, the ambiguous example is no longer ambiguous), `renderDocs` fails with a message.
+Each SVG has a PNG copy beside it, for sharing where SVG is not accepted. The PNGs are rendered
+at twice the SVG's size in the light theme, and an animation as its final frame. PNG output
+depends on the installed fonts, so each PNG records a hash of the SVG it came from, and
+`renderDocs` renders it again only when its SVG changes. To render every PNG again, for example
+after changing how they are drawn, change `RENDERING` in
+[PngFigures](src/docs/java/com/lemmingapex/trilateration/PngFigures.java).
+
+CI fails when the committed figures differ from freshly generated ones, or a PNG is missing or
+out of date. The inputs are fixed, so the output is reproducible. If a solver change makes a
+scenario stop showing what its caption claims (for example, the ambiguous example is no longer
+ambiguous), `renderDocs` fails with a message.
 
 ## Releasing
 
