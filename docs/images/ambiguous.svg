@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="518" viewBox="0 0 520 518" role="img">
+<title>Trilateration result</title>
+<desc>Estimated position (30.21, 40.22) from 4 anchors, RMS residual 0.9841; ambiguous, alternative position (30.61, -40.31).</desc>
+<style>svg{--surface:#fcfcfb;--ink:#0b0b0b;--ink2:#52514e;--muted:#898781;--grid:#e1e0d9;--ring:rgba(11,11,11,.10);--distance:#2a78d6;--estimate:#eb6834;--path:#1baf7a}@media (prefers-color-scheme:dark){svg{--surface:#1a1a19;--ink:#f0efec;--ink2:#c3c2b7;--muted:#898781;--grid:#2c2c2a;--ring:rgba(255,255,255,.10);--distance:#3987e5;--estimate:#d95926;--path:#199e70}}.card{fill:var(--surface);stroke:var(--ring)}.grid{stroke:var(--grid);stroke-width:1}.tick{font:11px system-ui,-apple-system,'Segoe UI',sans-serif;fill:var(--muted);font-variant-numeric:tabular-nums}.circle{fill:var(--distance);fill-opacity:.05;stroke:var(--distance);stroke-width:1.5}.outlier{stroke-dasharray:6 4}.open{fill:none}.anchor{fill:var(--ink);stroke:var(--surface);stroke-width:2}.estimate{fill:var(--estimate);stroke:var(--surface);stroke-width:2}.ellipse{fill:var(--estimate);fill-opacity:.14;stroke:var(--estimate);stroke-width:2}.alternative{fill:var(--surface);fill-opacity:.6;stroke:var(--estimate);stroke-width:2;stroke-dasharray:3 2.5}.residual{stroke:var(--ink2);stroke-width:2;stroke-linecap:round}.path{fill:none;stroke:var(--path);stroke-width:2;stroke-linecap:round}.start{fill:var(--surface);stroke:var(--path);stroke-width:2}.step{fill:var(--path);stroke:var(--surface);stroke-width:2}.axis{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 5}.truth{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}.route{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4}.fix{fill:none;stroke:var(--ink2);stroke-width:1.5}.track{fill:none;stroke:var(--estimate);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}.hit{fill:transparent}.caption{font:600 15px system-ui,-apple-system,'Segoe UI',sans-serif;fill:var(--ink)}.label,.legend{font:12px system-ui,-apple-system,'Segoe UI',sans-serif;fill:var(--ink2)}</style>
+<defs><clipPath id="trilateration-plot-333abfec"><rect x="39.80" y="14.00" width="466.20" height="421.40"/></clipPath></defs>
+<rect class="card" x="0.5" y="0.5" width="519" height="517" rx="10"/>
+<g class="grid"><line x1="84.92" y1="14.00" x2="84.92" y2="435.40"/><line x1="160.11" y1="14.00" x2="160.11" y2="435.40"/><line x1="235.30" y1="14.00" x2="235.30" y2="435.40"/><line x1="310.50" y1="14.00" x2="310.50" y2="435.40"/><line x1="385.69" y1="14.00" x2="385.69" y2="435.40"/><line x1="460.88" y1="14.00" x2="460.88" y2="435.40"/><line x1="39.80" y1="389.11" x2="506.00" y2="389.11"/><line x1="39.80" y1="313.92" x2="506.00" y2="313.92"/><line x1="39.80" y1="238.73" x2="506.00" y2="238.73"/><line x1="39.80" y1="163.53" x2="506.00" y2="163.53"/><line x1="39.80" y1="88.34" x2="506.00" y2="88.34"/></g>
+<g class="tick"><text x="84.92" y="452.40" text-anchor="middle">0</text><text x="160.11" y="452.40" text-anchor="middle">20</text><text x="235.30" y="452.40" text-anchor="middle">40</text><text x="310.50" y="452.40" text-anchor="middle">60</text><text x="385.69" y="452.40" text-anchor="middle">80</text><text x="460.88" y="452.40" text-anchor="middle">100</text><text x="33.80" y="393.11" text-anchor="end">-40</text><text x="33.80" y="317.92" text-anchor="end">-20</text><text x="33.80" y="242.73" text-anchor="end">0</text><text x="33.80" y="167.53" text-anchor="end">20</text><text x="33.80" y="92.34" text-anchor="end">40</text></g>
+<g clip-path="url(#trilateration-plot-333abfec)">
+<circle class="circle" cx="84.92" cy="238.73" r="190.99"/>
+<circle class="circle" cx="272.90" cy="236.85" r="161.29"/>
+<circle class="circle" cx="460.88" cy="238.73" r="307.17"/>
+<circle class="circle" cx="178.91" cy="240.61" r="155.65"/>
+<ellipse class="ellipse" cx="198.51" cy="87.52" rx="28.40" ry="19.59" transform="rotate(-9.26 198.51 87.52)"><title>95% confidence region</title></ellipse>
+<line class="residual" x1="199.63" y1="86.02" x2="198.51" y2="87.52"><title>Residual of anchor 1: -0.4967</title></line>
+<line class="residual" x1="200.98" y1="92.48" x2="198.51" y2="87.52"><title>Residual of anchor 2: 1.474</title></line>
+<line class="residual" x1="194.75" y1="85.35" x2="198.51" y2="87.52"><title>Residual of anchor 3: -1.154</title></line>
+<line class="residual" x1="198.68" y1="86.22" x2="198.51" y2="87.52"><title>Residual of anchor 4: -0.3489</title></line>
+<g><title>Anchor 1 at (0.000, 0.000), distance 50.80, residual -0.4967</title><circle class="hit" cx="84.92" cy="238.73" r="10.00"/><circle class="anchor" cx="84.92" cy="238.73" r="5.00"/></g>
+<text class="label" x="92.92" y="230.73">1</text>
+<g><title>Anchor 2 at (50.00, 0.5000), distance 42.90, residual 1.474</title><circle class="hit" cx="272.90" cy="236.85" r="10.00"/><circle class="anchor" cx="272.90" cy="236.85" r="5.00"/></g>
+<text class="label" x="280.90" y="228.85">2</text>
+<g><title>Anchor 3 at (100.0, 0.000), distance 81.70, residual -1.154</title><circle class="hit" cx="460.88" cy="238.73" r="10.00"/><circle class="anchor" cx="460.88" cy="238.73" r="5.00"/></g>
+<text class="label" x="468.88" y="230.73">3</text>
+<g><title>Anchor 4 at (25.00, -0.5000), distance 41.40, residual -0.3489</title><circle class="hit" cx="178.91" cy="240.61" r="10.00"/><circle class="anchor" cx="178.91" cy="240.61" r="5.00"/></g>
+<text class="label" x="186.91" y="232.61">4</text>
+<g><title>Alternative position (30.61, -40.31)</title><circle class="hit" cx="200.01" cy="390.28" r="12.00"/><circle class="alternative" cx="200.01" cy="390.28" r="7.00"/></g>
+<text class="label" x="210.01" y="380.28">alternative</text>
+<g><title>Estimated position (30.21, 40.22)</title><circle class="hit" cx="198.51" cy="87.52" r="11.00"/><circle class="estimate" cx="198.51" cy="87.52" r="6.00"/></g>
+<text class="label" x="208.51" y="77.52">estimate</text>
+</g>
+<g class="legend-items"><circle class="anchor" cx="48.80" cy="473.40" r="5"/><text class="legend" x="63.80" y="477.40">Anchor</text><circle class="circle" cx="132.20" cy="473.40" r="7"/><text class="legend" x="147.20" y="477.40">Measured distance</text><line class="residual" x1="284.50" y1="473.40" x2="298.50" y2="473.40"/><text class="legend" x="306.50" y="477.40">Residual</text><circle class="estimate" cx="388.70" cy="473.40" r="6"/><text class="legend" x="403.70" y="477.40">Estimate</text><ellipse class="ellipse" cx="48.80" cy="493.40" rx="8.5" ry="6"/><text class="legend" x="63.80" y="497.40">95% confidence region</text><circle class="alternative" cx="235.70" cy="493.40" r="6"/><text class="legend" x="250.70" y="497.40">Alternative (mirror image)</text></g>
+</svg>
