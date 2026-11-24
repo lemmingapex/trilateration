@@ -26,7 +26,7 @@ Guidelines:
 
 ## README figures
 
-The images in [docs/images](docs/images), including the animation, are generated from real solver
+The images in [docs/images](docs/images), including the animations, are generated from real solver
 output by [DocsFigures](src/docs/java/com/lemmingapex/trilateration/DocsFigures.java), which lives in a
 separate `docs` source set and is not part of the library jar. After changing the solver or the
 renderer, regenerate them and commit the result:

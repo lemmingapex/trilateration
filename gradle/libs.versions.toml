@@ -7,6 +7,7 @@ maven-publish = "0.37.0"
 [libraries]
 hipparchus-core = { module = "org.hipparchus:hipparchus-core", version.ref = "hipparchus" }
 hipparchus-optim = { module = "org.hipparchus:hipparchus-optim", version.ref = "hipparchus" }
+hipparchus-filtering = { module = "org.hipparchus:hipparchus-filtering", version.ref = "hipparchus" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }

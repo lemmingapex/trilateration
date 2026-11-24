@@ -37,6 +37,11 @@ val docs = sourceSets.create("docs") {
     runtimeClasspath += sourceSets.main.get().output + sourceSets.main.get().runtimeClasspath
 }
 
+dependencies {
+    // The tracking animation's Kalman filter. The library itself does not depend on it.
+    docs.implementationConfigurationName(libs.hipparchus.filtering)
+}
+
 tasks.register<JavaExec>("renderDocs") {
     group = "documentation"
     description = "Regenerates the README figures in docs/images from real solver output."

@@ -3,6 +3,7 @@ package com.lemmingapex.trilateration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Function;
 
 /**
  * Minimal SVG building blocks shared by {@link TrilaterationSvg} and the documentation figures:
@@ -29,6 +30,7 @@ final class SvgWriter {
             + ".tick{font:11px " + FONT + ";fill:var(--muted);font-variant-numeric:tabular-nums}"
             + ".circle{fill:var(--distance);fill-opacity:.05;stroke:var(--distance);stroke-width:1.5}"
             + ".outlier{stroke-dasharray:6 4}"
+            + ".open{fill:none}"
             + ".anchor{fill:var(--ink);stroke:var(--surface);stroke-width:2}"
             + ".estimate{fill:var(--estimate);stroke:var(--surface);stroke-width:2}"
             + ".ellipse{fill:var(--estimate);fill-opacity:.14;stroke:var(--estimate);stroke-width:2}"
@@ -39,6 +41,9 @@ final class SvgWriter {
             + ".step{fill:var(--path);stroke:var(--surface);stroke-width:2}"
             + ".axis{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:6 5}"
             + ".truth{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}"
+            + ".route{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4}"
+            + ".fix{fill:none;stroke:var(--ink2);stroke-width:1.5}"
+            + ".track{fill:none;stroke:var(--estimate);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}"
             + ".hit{fill:transparent}"
             + ".caption{font:600 15px " + FONT + ";fill:var(--ink)}"
             + ".label,.legend{font:12px " + FONT + ";fill:var(--ink2)}";
@@ -177,10 +182,20 @@ final class SvgWriter {
     }
 
     /** Kinds of legend entry; each draws its own swatch. */
-    enum Swatch { ANCHOR, DISTANCE, OUTLIER_DISTANCE, ESTIMATE, HOLLOW_ESTIMATE, REGION, ALTERNATIVE, RESIDUAL, PATH, TRUTH }
+    enum Swatch { ANCHOR, DISTANCE, OUTLIER_DISTANCE, ESTIMATE, HOLLOW_ESTIMATE, REGION, ALTERNATIVE, RESIDUAL, PATH, TRUTH,
+        ROUTE, FIX, TRACK }
 
     /** One legend entry. */
     record LegendItem(Swatch swatch, String text) {
+    }
+
+    /**
+     * The gridlines of one axis: their positions in world coordinates and their tick labels.
+     *
+     * @param at     world coordinates of the gridlines
+     * @param labels one label per gridline
+     */
+    record Ticks(double[] at, String[] labels) {
     }
 
     /**
@@ -200,9 +215,8 @@ final class SvgWriter {
         private final String clipId;
         private final List<LegendItem> legend;
         private final double legendTop;
-        private final double[] xTicks;
-        private final double[] yTicks;
-        private final int decimals;
+        private final Ticks xTicks;
+        private final Ticks yTicks;
 
         /**
          * @param bounds  world region to show
@@ -212,24 +226,32 @@ final class SvgWriter {
          * @param clipId  document-unique id for the plot clip path
          */
         Layout(double[] bounds, int width, double top, List<LegendItem> legend, String clipId) {
+            this(bounds, width, top, legend, clipId,
+                    view -> niceTicks(view, view.minX, view.maxX), view -> niceTicks(view, view.minY, view.maxY));
+        }
+
+        /**
+         * A layout with custom gridlines, such as lines of latitude and longitude.
+         *
+         * @param xRule chooses the vertical gridlines for a viewport
+         * @param yRule chooses the horizontal gridlines for a viewport
+         */
+        Layout(double[] bounds, int width, double top, List<LegendItem> legend, String clipId,
+               Function<Viewport, Ticks> xRule, Function<Viewport, Ticks> yRule) {
             this.width = width;
             this.legend = legend;
             this.clipId = clipId;
 
             // Two passes: tick labels decide the left inset, which changes the scale slightly.
             Viewport trial = new Viewport(bounds, 48, top, width - 48 - OUTER);
-            double step = niceStep(trial);
-            int places = decimals(step);
             double labelWidth = 0;
-            for (double t : ticks(trial.minY, trial.maxY, step)) {
-                labelWidth = Math.max(labelWidth, textWidth(format(t, places), 6.6));
+            for (String label : yRule.apply(trial).labels()) {
+                labelWidth = Math.max(labelWidth, textWidth(label, 6.6));
             }
             double left = OUTER + labelWidth + TICK_GAP;
             this.view = new Viewport(bounds, left, top, width - left - OUTER);
-            double finalStep = niceStep(view);
-            this.decimals = decimals(finalStep);
-            this.xTicks = ticks(view.minX, view.maxX, finalStep);
-            this.yTicks = ticks(view.minY, view.maxY, finalStep);
+            this.xTicks = xRule.apply(view);
+            this.yTicks = yRule.apply(view);
             this.legendTop = top + view.plotHeight() + TICK_GAP + TICK_HEIGHT + 6;
             int rows = legendRows(legend, left, width - OUTER).size();
             this.height = (int) Math.ceil(legendTop + rows * LEGEND_ROW + (rows > 0 ? 6 : 0) + OUTER - 6);
@@ -257,24 +279,24 @@ final class SvgWriter {
                     .append(num(bottom - top)).append("\"/></clipPath></defs>\n");
             s.append("<rect class=\"card\" x=\"0.5\" y=\"0.5\" width=\"").append(width - 1).append("\" height=\"")
                     .append(height - 1).append("\" rx=\"10\"/>\n<g class=\"grid\">");
-            for (double t : xTicks) {
+            for (double t : xTicks.at()) {
                 String x = num(view.x(t));
                 s.append("<line x1=\"").append(x).append("\" y1=\"").append(num(top)).append("\" x2=\"").append(x)
                         .append("\" y2=\"").append(num(bottom)).append("\"/>");
             }
-            for (double t : yTicks) {
+            for (double t : yTicks.at()) {
                 String y = num(view.y(t));
                 s.append("<line x1=\"").append(num(left)).append("\" y1=\"").append(y).append("\" x2=\"").append(num(right))
                         .append("\" y2=\"").append(y).append("\"/>");
             }
             s.append("</g>\n<g class=\"tick\">");
-            for (double t : xTicks) {
-                s.append("<text x=\"").append(num(view.x(t))).append("\" y=\"").append(num(bottom + TICK_GAP + 11))
-                        .append("\" text-anchor=\"middle\">").append(format(t, decimals)).append("</text>");
+            for (int i = 0; i < xTicks.at().length; i++) {
+                s.append("<text x=\"").append(num(view.x(xTicks.at()[i]))).append("\" y=\"").append(num(bottom + TICK_GAP + 11))
+                        .append("\" text-anchor=\"middle\">").append(escape(xTicks.labels()[i])).append("</text>");
             }
-            for (double t : yTicks) {
-                s.append("<text x=\"").append(num(left - TICK_GAP)).append("\" y=\"").append(num(view.y(t) + 4))
-                        .append("\" text-anchor=\"end\">").append(format(t, decimals)).append("</text>");
+            for (int i = 0; i < yTicks.at().length; i++) {
+                s.append("<text x=\"").append(num(left - TICK_GAP)).append("\" y=\"").append(num(view.y(yTicks.at()[i]) + 4))
+                        .append("\" text-anchor=\"end\">").append(escape(yTicks.labels()[i])).append("</text>");
             }
             return s.append("</g>\n").toString();
         }
@@ -336,7 +358,23 @@ final class SvgWriter {
                         + "\" y2=\"" + num(cy - 3) + "\"/><circle class=\"step\" cx=\"" + num(cx + 6) + "\" cy=\""
                         + num(cy - 3) + "\" r=\"4\"/>";
                 case TRUTH -> cross(cx, cy, 5);
+                case ROUTE -> "<line class=\"route\" x1=\"" + num(cx - 9) + "\" y1=\"" + y + "\" x2=\"" + num(cx + 9) + "\" y2=\"" + y + "\"/>";
+                case FIX -> "<circle class=\"fix\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"3.5\"/>";
+                case TRACK -> "<line class=\"track\" x1=\"" + num(cx - 8) + "\" y1=\"" + num(cy + 3) + "\" x2=\"" + num(cx + 8)
+                        + "\" y2=\"" + num(cy - 3) + "\"/>";
             };
+        }
+
+        /** Evenly spaced round numbers, with the same step on both axes so grid cells are square. */
+        static Ticks niceTicks(Viewport view, double min, double max) {
+            double step = niceStep(view);
+            int places = decimals(step);
+            double[] at = ticks(min, max, step);
+            String[] labels = new String[at.length];
+            for (int i = 0; i < at.length; i++) {
+                labels[i] = format(at[i], places);
+            }
+            return new Ticks(at, labels);
         }
 
         private static double niceStep(Viewport view) {
@@ -358,7 +396,7 @@ final class SvgWriter {
             return ticks;
         }
 
-        private static int decimals(double step) {
+        static int decimals(double step) {
             return (int) Math.max(0, -StrictMath.floor(StrictMath.log10(step) + 1e-9));
         }
 

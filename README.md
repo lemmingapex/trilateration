@@ -265,6 +265,19 @@ previous = fix.getPoint();
 fix.getCovariance().ifPresent(r -> kalmanFilter.update(fix.getPoint(), r));
 ```
 
+![Animation: a target laps an oval route among four anchors given by latitude and longitude. The four distance circles change with every measurement. The single fixes scatter around the route; the Kalman filter's track follows it more closely, with its 95% confidence region moving along.](docs/images/tracking.svg)
+
+The animation runs this loop with the four anchors of the [latitude and longitude](#latitude-and-longitude)
+example. The target laps the route at about 2 m/s. Twice a second, its four ranges are measured with
+3 m of noise and solved for a single fix (hollow dots) in the anchors' `GeodeticFrame`. A
+constant-velocity Kalman filter (orange) uses each fix's covariance as its measurement noise,
+which cuts the RMS error from 3.1 m to 1.8 m. The filter is not part of this library. The
+animation uses the `LinearKalmanFilter` from
+[hipparchus-filtering](https://hipparchus.org/hipparchus-filtering/), from the same project as
+this library's own dependency. Its fix measurement and motion model are the `Fix` and
+`ConstantVelocity` classes in
+[DocsFigures.java](src/docs/java/com/lemmingapex/trilateration/DocsFigures.java).
+
 ### What it does not cover
 
 - **Measuring distances.** You convert raw measurements to distances yourself, for example with
