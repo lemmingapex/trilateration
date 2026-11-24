@@ -4,7 +4,7 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [2.0.0] - Unreleased
+## [2.0.0] - 2026-11-24
 
 A rewrite with a new, self-contained API. The lists below cover everything that changed for 1.x users.
 
@@ -83,7 +83,7 @@ A rewrite with a new, self-contained API. The lists below cover everything that 
 
 - Initial release.
 
-[2.0.0]: https://github.com/lemmingapex/trilateration/compare/v1.0.2...HEAD
+[2.0.0]: https://github.com/lemmingapex/trilateration/compare/v1.0.2...v2.0.0
 [1.0.2]: https://github.com/lemmingapex/trilateration/compare/v1.0.1...v1.0.2
 [1.0.1]: https://github.com/lemmingapex/trilateration/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/lemmingapex/trilateration/releases/tag/v1.0.0

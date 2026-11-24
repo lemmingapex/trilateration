@@ -97,7 +97,7 @@ mavenPublishing {
 
     pom {
         name = "trilateration"
-        description = "Solves n-dimensional trilateration (multilateration) problems with a nonlinear least squares optimizer."
+        description = "Trilateration and multilateration for Java: estimates a position from measured distances to anchors at known positions, in any number of dimensions or from latitude and longitude."
         inceptionYear = "2015"
         url = "https://github.com/lemmingapex/trilateration"
         licenses {
