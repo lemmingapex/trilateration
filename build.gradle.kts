@@ -128,9 +128,11 @@ mavenPublishing {
     }
 }
 
-tasks.matching { it.name == "prepareMavenCentralPublishing" || it.name.endsWith("ToMavenCentralRepository") }.configureEach {
-    doFirst {
-        if (!signingConfigured) {
+if (!signingConfigured) {
+    // The action must not refer to anything declared in this script: the configuration cache
+    // cannot store a reference to the script.
+    tasks.matching { it.name == "prepareMavenCentralPublishing" || it.name.endsWith("ToMavenCentralRepository") }.configureEach {
+        doFirst {
             throw GradleException(
                 "Maven Central requires signed artifacts, but no signing key is configured. Set signingInMemoryKey " +
                     "and signingInMemoryKeyPassword, or signing.keyId, signing.password and signing.secretKeyRingFile.")
