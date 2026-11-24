@@ -5,13 +5,16 @@
 [![Javadoc](https://javadoc.io/badge2/com.lemmingapex.trilateration/trilateration/javadoc.svg)](https://javadoc.io/doc/com.lemmingapex.trilateration/trilateration)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+A Java library for trilateration and multilateration: it estimates an unknown position from the
+measured distances to anchors at known positions, such as Bluetooth beacons, Wi-Fi access points,
+UWB anchors or acoustic transponders. It works in any number of dimensions (1D, 2D, 3D, ...) and
+with latitude and longitude, tolerates noisy and inconsistent measurements, can down-weight
+outliers, and reports how uncertain the answer is.
+
 ![Five anchors on a coordinate grid, each with a blue circle of measured distance. The circles cross near the estimated position, marked in orange with its 95% confidence region.](docs/images/solution.svg)
 
-A small Java library that estimates an unknown position from the known positions of anchors and the
-measured distance to each one. It works in any number of dimensions (1D, 2D, 3D, ...), tolerates
-noisy and inconsistent measurements, can down-weight outliers, and reports how uncertain the answer is.
-
-- **Input:** anchor positions, measured distances, and optionally the uncertainty of each distance
+- **Input:** anchor positions (coordinates, or latitude and longitude), measured distances, and
+  optionally the uncertainty of each distance
 - **Output:** the maximum likelihood position, its residuals, covariance and confidence intervals,
   and a warning when the anchors cannot tell the position from its mirror image
 
