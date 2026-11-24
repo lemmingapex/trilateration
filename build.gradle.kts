@@ -86,11 +86,15 @@ tasks.jacocoTestReport {
     }
 }
 
+// Sign when a key is configured: in memory (signingInMemoryKey, as the release workflow does) or
+// as a keyring file (signing.keyId, signing.password and signing.secretKeyRingFile, for example in
+// ~/.gradle/gradle.properties). Without a key, builds and publishToMavenLocal still work, but
+// publishing to Maven Central fails before anything is uploaded.
+val signingConfigured = listOf("signingInMemoryKey", "signing.keyId").any { providers.gradleProperty(it).isPresent }
+
 mavenPublishing {
     publishToMavenCentral()
-    // Sign only when a key is provided (CI release job), so local builds and
-    // publishToMavenLocal work without any credentials.
-    if (providers.gradleProperty("signingInMemoryKey").isPresent) {
+    if (signingConfigured) {
         signAllPublications()
     }
 
@@ -120,6 +124,16 @@ mavenPublishing {
             url = "https://github.com/lemmingapex/trilateration"
             connection = "scm:git:git://github.com/lemmingapex/trilateration.git"
             developerConnection = "scm:git:ssh://git@github.com/lemmingapex/trilateration.git"
+        }
+    }
+}
+
+tasks.matching { it.name == "prepareMavenCentralPublishing" || it.name.endsWith("ToMavenCentralRepository") }.configureEach {
+    doFirst {
+        if (!signingConfigured) {
+            throw GradleException(
+                "Maven Central requires signed artifacts, but no signing key is configured. Set signingInMemoryKey " +
+                    "and signingInMemoryKeyPassword, or signing.keyId, signing.password and signing.secretKeyRingFile.")
         }
     }
 }
