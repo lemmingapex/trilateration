@@ -11,6 +11,10 @@ All notable changes to this project are documented here. The format follows
 - `isAmbiguous()` returned `false` when a whole circle of positions fits the measurements: collinear
   anchors or at most two anchors in 3D, or a single anchor in 2D. These results are now ambiguous,
   with a mirror-image alternative.
+- `isAmbiguous()` could return `true` with an alternative that was the same solution: with
+  inconsistent measurements, the mirror check's second run sometimes stopped a tiny distance from
+  the first in the same minimum. Solutions now count as distinct only if the step between them
+  changes the fit noticeably.
 
 ## [2.0.0] - 2026-11-24
 

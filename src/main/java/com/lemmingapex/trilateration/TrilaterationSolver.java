@@ -63,6 +63,13 @@ public final class TrilaterationSolver {
     /** Solutions closer than this fraction of the problem's length scale are the same solution. */
     private static final double SAME_POINT_TOLERANCE = 1e-6;
 
+    /**
+     * Two runs that stopped in the same minimum differ by a step that changes the cost by less than
+     * this fraction of the cost (see {@link #sameMinimum}). With the default tolerances, runs into
+     * the same minimum stay below about 1e-7, and distinct minima are above 1e-2.
+     */
+    private static final double SAME_MINIMUM_TOLERANCE = 1e-4;
+
     /** Residuals smaller than this fraction of the problem's length scale count as an exact fit. */
     private static final double EXACT_FIT_TOLERANCE = 1e-9;
 
@@ -79,6 +86,7 @@ public final class TrilaterationSolver {
     private final LevenbergMarquardtOptimizer optimizer;
     private final RobustLoss robustLoss;
     private final boolean mirrorCheck;
+    private final double sameMinimumTolerance;
 
     /**
      * Creates a solver with default settings.
@@ -91,6 +99,8 @@ public final class TrilaterationSolver {
         this.maxEvaluations = builder.maxEvaluations;
         this.robustLoss = builder.robustLoss;
         this.mirrorCheck = builder.mirrorCheck;
+        // A looser cost tolerance lets runs stop farther from the minimum, so widen the test with it.
+        this.sameMinimumTolerance = Math.max(SAME_MINIMUM_TOLERANCE, 1e4 * builder.costRelativeTolerance);
         this.optimizer = new LevenbergMarquardtOptimizer()
                 .withCostRelativeTolerance(builder.costRelativeTolerance)
                 .withParameterRelativeTolerance(builder.parameterRelativeTolerance);
@@ -168,7 +178,7 @@ public final class TrilaterationSolver {
             if (mirror != null) {
                 iterations += mirror.iterations();
                 evaluations += mirror.evaluations();
-                if (TrilaterationFunction.distance(mirror.point(), best.point()) > SAME_POINT_TOLERANCE * length) {
+                if (!sameMinimum(function, best, mirror, weights, length)) {
                     double scale = best.scale();
                     double bestCost = best.cost(weights, scale);
                     double mirrorCost = mirror.cost(weights, scale);
@@ -258,6 +268,35 @@ public final class TrilaterationSolver {
         } catch (MathRuntimeException e) {
             throw new TrilaterationException("Trilateration failed: " + e.getMessage(), e);
         }
+    }
+
+    /**
+     * Whether two runs ended in the same minimum. A run stops once the cost no longer improves by
+     * more than the convergence tolerance, which in a shallow minimum can be well before it reaches
+     * the bottom, so two runs into the same minimum can end visibly apart. They count as the same
+     * when they are within {@link #SAME_POINT_TOLERANCE} of the length scale, or when the
+     * linearized cost change of the step between them, {@code dx^T J^T W J dx}, is a negligible
+     * fraction of the cost: a distance small compared with the solution's uncertainty.
+     */
+    private boolean sameMinimum(TrilaterationFunction function, Fit a, Fit b, double[] weights, double length) {
+        double[] p = a.point();
+        double[] q = b.point();
+        if (TrilaterationFunction.distance(p, q) <= SAME_POINT_TOLERANCE * length) {
+            return true;
+        }
+        double[][] jacobian = function.jacobian(p);
+        double change = 0;
+        double chiSquare = 0;
+        for (int i = 0; i < weights.length; i++) {
+            double w = weights[i] * a.robustWeights()[i];
+            double step = 0;
+            for (int j = 0; j < p.length; j++) {
+                step += jacobian[i][j] * (q[j] - p[j]);
+            }
+            change += w * step * step;
+            chiSquare += w * a.residuals()[i] * a.residuals()[i];
+        }
+        return change < sameMinimumTolerance * chiSquare;
     }
 
     /**

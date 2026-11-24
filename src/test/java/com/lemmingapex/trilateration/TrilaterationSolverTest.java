@@ -369,6 +369,49 @@ class TrilaterationSolverTest {
         }
 
         @Test
+        void twoRunsIntoTheSameMinimumAreNotAmbiguous() {
+            // Inconsistent measurements with a shallow minimum: both runs stop about 5e-5 apart.
+            TrilaterationResult result = SOLVER.solve(new double[][] {{39, 28}, {13, 39}, {16, 40}}, new double[] {8, 11, 8});
+
+            assertFalse(result.isAmbiguous());
+            assertArrayEquals(new double[] {26.0138, 34.2229}, result.getPoint(), 1e-3);
+        }
+
+        @Test
+        void alternativesAreDistinctPoints() {
+            Random random = new Random(7);
+            int ambiguous = 0;
+            int failures = 0;
+            for (int t = 0; t < 2000; t++) {
+                int n = 2 + random.nextInt(2);
+                double[][] positions = new double[n + 1 + random.nextInt(3)][];
+                double flatness = t % 2 == 0 ? 0.01 : 1;   // half nearly collinear or coplanar
+                for (int i = 0; i < positions.length; i++) {
+                    positions[i] = randomPoint(random, n, 0, 100);
+                    positions[i][n - 1] *= flatness;
+                }
+                double[] distances = noisy(random, exactDistances(positions, randomPoint(random, n, 0, 100)), 5.0);
+
+                TrilaterationResult result;
+                try {
+                    result = SOLVER.solve(positions, distances);
+                } catch (TrilaterationException e) {
+                    // A few nearly flat, very noisy problems exhaust the evaluation limit (2 here).
+                    failures++;
+                    continue;
+                }
+
+                if (result.isAmbiguous()) {
+                    ambiguous++;
+                    double gap = TrilaterationFunction.distance(result.getPoint(), result.getAlternativePoint().orElseThrow());
+                    assertTrue(gap > 0.01, "alternative only " + gap + " from the point, case " + t);
+                }
+            }
+            assertTrue(failures <= 5, "optimizer failures: " + failures);
+            assertTrue(ambiguous > 100, "the scenario should produce ambiguous results: " + ambiguous);
+        }
+
+        @Test
         void initialGuessWinsATie() {
             double[][] positions = {{0, 0}, {50, 0}, {100, 0}};
             TrilaterationProblem problem = TrilaterationProblem.of(positions, exactDistances(positions, truth));
