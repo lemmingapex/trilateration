@@ -56,7 +56,7 @@ A rewrite with a new, self-contained API. The lists below cover everything that 
 
 - `NonLinearLeastSquaresSolver`, `LinearLeastSquaresSolver` and the public `TrilaterationFunction`.
 - The `debugInfo` options that printed to standard output.
-- The bundled reference PDF; the README now cites it instead.
+- The bundled reference PDF.
 
 ### Fixed
 
