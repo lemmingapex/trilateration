@@ -414,12 +414,6 @@ A solve with the default settings takes about 10 µs for 4 anchors in 2D and 18 
 3D on a recent laptop. Without the mirror check, it takes about half that. A robust loss adds
 roughly 4–5× because of the reweighting rounds.
 
-### Further reading
-
-Willy Hereman, *Trilateration: The Mathematics Behind a Local Positioning System*, talk at Turgut
-Özal University, Ankara, 2011 (Colorado School of Mines, <http://inside.mines.edu/~whereman/>)
-covers the linear and nonlinear least squares formulations in more depth.
-
 ## Building from source
 
 Requires JDK 17 or newer.
