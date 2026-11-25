@@ -265,7 +265,7 @@ previous = fix.getPoint();
 fix.getCovariance().ifPresent(r -> kalmanFilter.update(fix.getPoint(), r));
 ```
 
-![Animation: a target laps an oval route among four anchors given by latitude and longitude. The four distance circles change with every measurement. The single fixes scatter around the route; the Kalman filter's track follows it more closely, with its 95% confidence region moving along.](docs/images/tracking.svg)
+![Animation: a target laps an oval route among four anchors given by latitude and longitude. The four distance circles change with every measurement. The single fixes scatter around the route; the Kalman filter's track follows it more closely, with its 95% confidence region moving along and leaving a faint trail.](docs/images/tracking.svg)
 
 The animation runs this loop with the four anchors of the [latitude and longitude](#latitude-and-longitude)
 example. The target laps the route at about 2 m/s. Twice a second, its four ranges are measured with

@@ -566,6 +566,20 @@ public final class DocsFigures {
             body.append("<polyline class=\"route\" points=\"").append(points).append("\" opacity=\"1\">")
                     .append(visible(0.3, end)).append("</polyline>\n");
 
+            // The confidence region's trail: every filter step's ellipse stays once the estimate
+            // moves on. The ellipses only shape a mask, through which one translucent rectangle is
+            // drawn, so the trail is one even, light shade even where they overlap.
+            body.append("<mask id=\"tracking-trail\" maskUnits=\"userSpaceOnUse\" x=\"0\" y=\"0\" width=\"").append(WIDTH)
+                    .append("\" height=\"").append(SvgWriter.num(layout.height)).append("\">\n");
+            for (int k = 0; k < FIXES; k++) {
+                body.append(TrilaterationSvg.ellipseElement(view, filtered[k], ellipses[k],
+                                animate("opacity", new double[] {0, at[k], at[k], end, end + FADE, duration},
+                                        new String[] {"0", "0", "1", "1", "0", "0"}))
+                        .replace("class=\"ellipse\"", "fill=\"#fff\""));
+            }
+            body.append("</mask>\n<rect x=\"0\" y=\"0\" width=\"").append(WIDTH).append("\" height=\"")
+                    .append(SvgWriter.num(layout.height)).append("\" style=\"fill:var(--estimate);fill-opacity:.1\" mask=\"url(#tracking-trail)\"/>\n");
+
             // Distance circles, resized at every fix. Unfilled: four large overlapping fills would
             // wash out the comparison between fixes and track.
             double[] circleTimes = new double[FIXES + 2];
