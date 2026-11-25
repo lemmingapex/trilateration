@@ -253,7 +253,6 @@ Common uses:
 
 ### Tracking a moving target
 
-
 For a moving target, reuse one solver, start each solve from the previous position, and pass the
 covariance to a tracking filter as its measurement noise:
 
