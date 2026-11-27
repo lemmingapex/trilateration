@@ -49,6 +49,7 @@ public final class DocsFigures {
         write(out.resolve("outlier.svg"), outlier());
         write(out.resolve("solver.svg"), SolverAnimation.render());
         write(out.resolve("tracking.svg"), TrackingAnimation.render());
+        write(out.resolve("radical-axes.svg"), radicalAxes());
         System.out.println("Wrote figures to " + out.toAbsolutePath());
     }
 
@@ -131,6 +132,90 @@ public final class DocsFigures {
         svg.append(SvgWriter.label(view, huber, "Huber", 12, -10));
         // On top of the Huber dot: the point of the figure is that they coincide.
         svg.append(SvgWriter.cross(view.x(truth[0]), view.y(truth[1]), 6)).append("\n");
+        svg.append(layout.close());
+        return svg.finish();
+    }
+
+    /**
+     * The figure in docs/linear-trilateration-2d.md: three anchors, their distance circles and the
+     * radical axis of each pair, the line that subtracting two circle equations gives. The axes
+     * pass through the points where their circles cross and meet at the linear estimate.
+     */
+    static String radicalAxes() {
+        double[][] anchors = {{12, 18}, {82, 10}, {44, 84}};
+        double[] distances = measure(anchors, new double[] {47, 42}, new double[] {0, 0, 0});
+        double[] estimate = LinearEstimator.estimate(anchors, distances, new double[] {1, 1, 1}).point();
+        int[][] pairs = {{0, 1}, {0, 2}, {1, 2}};
+
+        // Each axis as {mid x, mid y, unit direction x, unit direction y, half chord}: the axis is
+        // the line a . x = b with a = 2 (p_j - p_i) and b = r_i^2 - r_j^2 + |p_j|^2 - |p_i|^2, and
+        // mid is the projection of p_i onto it. The circles cross at mid ± half chord.
+        double[][] axes = new double[pairs.length][];
+        SvgWriter.Bounds bounds = new SvgWriter.Bounds().add(estimate);
+        for (double[] a : anchors) {
+            bounds.add(a);
+        }
+        for (int k = 0; k < pairs.length; k++) {
+            double[] p = anchors[pairs[k][0]];
+            double[] q = anchors[pairs[k][1]];
+            double ax = 2 * (q[0] - p[0]);
+            double ay = 2 * (q[1] - p[1]);
+            double b = distances[pairs[k][0]] * distances[pairs[k][0]] - distances[pairs[k][1]] * distances[pairs[k][1]]
+                    + q[0] * q[0] + q[1] * q[1] - p[0] * p[0] - p[1] * p[1];
+            double norm = StrictMath.hypot(ax, ay);
+            double t = (b - ax * p[0] - ay * p[1]) / (norm * norm);
+            double[] mid = {p[0] + t * ax, p[1] + t * ay};
+            double offset = TrilaterationFunction.distance(mid, p);
+            double half = StrictMath.sqrt(Math.max(0, distances[pairs[k][0]] * distances[pairs[k][0]] - offset * offset));
+            axes[k] = new double[] {mid[0], mid[1], -ay / norm, ax / norm, half};
+            bounds.add(mid[0] + half * axes[k][2], mid[1] + half * axes[k][3], 0)
+                    .add(mid[0] - half * axes[k][2], mid[1] - half * axes[k][3], 0);
+            double miss = Math.abs(ax * estimate[0] + ay * estimate[1] - b) / norm;
+            if (miss > 1e-6) {
+                throw new IllegalStateException("The radical axes no longer meet at the linear estimate: " + miss);
+            }
+        }
+
+        List<LegendItem> legend = List.of(
+                new LegendItem(Swatch.ANCHOR, "Anchor"),
+                new LegendItem(Swatch.DISTANCE, "Measured distance"),
+                new LegendItem(Swatch.AXIS, "Radical axis"),
+                new LegendItem(Swatch.FIX, "Where two circles cross"),
+                new LegendItem(Swatch.ESTIMATE, "Position"));
+        SvgWriter.Layout layout = new SvgWriter.Layout(bounds.padded(0.08, 1), 520, 14, legend, "radical-plot");
+        SvgWriter.Viewport view = layout.view;
+        SvgWriter svg = new SvgWriter(520, layout.height, "Radical axes of three distance circles",
+                "Three anchors and their distance circles. Subtracting the equations of two circles gives a straight "
+                        + "line, the radical axis, through the two points where those circles cross. The three radical axes "
+                        + "meet at the position " + SvgWriter.point(estimate) + ".");
+        svg.append(layout.open());
+        for (int i = 0; i < anchors.length; i++) {
+            svg.append(circle(view, anchors[i], distances[i], "circle"));
+        }
+        double reach = 4 * (view.maxX - view.minX + view.maxY - view.minY);
+        for (int k = 0; k < pairs.length; k++) {
+            double[] axis = axes[k];
+            svg.append("<g><title>Radical axis of circles " + (pairs[k][0] + 1) + " and " + (pairs[k][1] + 1)
+                    + "</title><line class=\"axis\" x1=\"" + SvgWriter.num(view.x(axis[0] - reach * axis[2]))
+                    + "\" y1=\"" + SvgWriter.num(view.y(axis[1] - reach * axis[3]))
+                    + "\" x2=\"" + SvgWriter.num(view.x(axis[0] + reach * axis[2]))
+                    + "\" y2=\"" + SvgWriter.num(view.y(axis[1] + reach * axis[3])) + "\"/></g>\n");
+        }
+        for (int k = 0; k < pairs.length; k++) {
+            double[] axis = axes[k];
+            for (int sign = -1; sign <= 1; sign += 2) {
+                // One crossing of every pair is the position, where its marker covers this one.
+                double[] crossing = {axis[0] + sign * axis[4] * axis[2], axis[1] + sign * axis[4] * axis[3]};
+                svg.append(SvgWriter.marker(view, crossing, 3.5, "fix", "Circles " + (pairs[k][0] + 1) + " and "
+                        + (pairs[k][1] + 1) + " cross at " + SvgWriter.point(crossing)));
+            }
+        }
+        for (int i = 0; i < anchors.length; i++) {
+            svg.append(SvgWriter.marker(view, anchors[i], 5, "anchor", "Anchor " + (i + 1) + ", measured distance "
+                    + SvgWriter.value(distances[i])));
+            svg.append(SvgWriter.label(view, anchors[i], String.valueOf(i + 1), 8, -8));
+        }
+        svg.append(SvgWriter.marker(view, estimate, 6, "estimate", "Position " + SvgWriter.point(estimate)));
         svg.append(layout.close());
         return svg.finish();
     }

@@ -183,7 +183,7 @@ final class SvgWriter {
 
     /** Kinds of legend entry; each draws its own swatch. */
     enum Swatch { ANCHOR, DISTANCE, OUTLIER_DISTANCE, ESTIMATE, HOLLOW_ESTIMATE, REGION, ALTERNATIVE, RESIDUAL, PATH, TRUTH,
-        ROUTE, FIX, TRACK }
+        ROUTE, FIX, TRACK, AXIS }
 
     /** One legend entry. */
     record LegendItem(Swatch swatch, String text) {
@@ -362,6 +362,7 @@ final class SvgWriter {
                 case FIX -> "<circle class=\"fix\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"3.5\"/>";
                 case TRACK -> "<line class=\"track\" x1=\"" + num(cx - 8) + "\" y1=\"" + num(cy + 3) + "\" x2=\"" + num(cx + 8)
                         + "\" y2=\"" + num(cy - 3) + "\"/>";
+                case AXIS -> "<line class=\"axis\" x1=\"" + num(cx - 9) + "\" y1=\"" + y + "\" x2=\"" + num(cx + 9) + "\" y2=\"" + y + "\"/>";
             };
         }
 

@@ -348,7 +348,9 @@ $$
 $$
 
 where the bars are weighted means. Each row is scaled by $\sqrt{w_i}$, and the system is solved by
-least squares with a singular value decomposition (SVD). This formulation has useful properties:
+least squares with a singular value decomposition (SVD). For a step-by-step derivation in 2D, with
+a worked example, see [Linear trilateration in 2D](docs/linear-trilateration-2d.md). This
+formulation has useful properties:
 
 - **No reference anchor.** Subtracting the mean, instead of one anchor's equation, does not let a
   single noisy anchor skew the estimate.
